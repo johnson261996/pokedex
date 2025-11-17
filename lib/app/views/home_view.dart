@@ -53,137 +53,156 @@ class _HomeViewState extends State<HomeView> {
         ],
       ),
       body: Obx(() {
-        return Column(
+        return Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: searchController,
-                decoration: const InputDecoration(
-                  hintText: "Search Pokémon by name...",
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.search),
-                ),
-                onChanged: (value) {
-                  controller.searchQuery.value = value;
-                },
-                onSubmitted: (value) {
-                  controller.searchPokemon(value.trim());
-                  controller.showSuggestions.value = false;
-                },
-              ),
-            ),
+            _buildMainContent(),
             // 👇 SUGGESTION DROPDOWN
             if (controller.showSuggestions.value &&
                 controller.suggestions.isNotEmpty)
-              Flexible(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 250),
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 4),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade300,
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: controller.suggestions.length,
-                      itemBuilder: (_, index) {
-                        final name = controller.suggestions[index];
-                        return ListTile(
-                          dense: true,
-                          title: Text(name.capitalizeFirst ?? name),
-                          onTap: () {
-                            controller.searchPokemon(name);
-                            controller.showSuggestions.value = false;
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            // Random button
-            ElevatedButton(
-              onPressed: () => controller.getMultipleRandomPokemon(20),
-              child: const Text("🎲 Random Pokémon"),
-            ),
-            SizedBox(height: 10),
-            Expanded(
-              child: Obx(() {
-                if (!networkController.isConnected.value) {
-                  return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.wifi_off, size: 70, color: Colors.grey),
-                        const SizedBox(height: 10),
-                        Text(
-                          "No internet connection",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (networkController.isConnected.value) {
-                              controller.fetchPokemonList();
-                            }
-                          },
-                          child: Text("Retry"),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (controller.pokemonList.isEmpty) {
-                  return const Center(child: Text("No Pokémon found"));
-                }
-
-                if (controller.errorMessage.value.isNotEmpty) {
-                  return Center(child: Text(controller.errorMessage.value));
-                }
-
-                return GridView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(8),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1.1,
-                  ),
-                  itemCount:
-                      controller.pokemonList.length +
-                      (controller.isLoadingMore.value ? 1 : 0),
-                  controller: scrollController,
-                  itemBuilder: (context, index) {
-                    if (index == controller.pokemonList.length) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-
-                    final pokemon = controller.pokemonList[index];
-                    return pokemonCard(pokemon);
-                  },
-                );
-              }),
-            ),
+              _buildOverlaySuggestions(),
           ],
         );
       }),
+    );
+  }
+
+  Column _buildMainContent() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: searchController,
+            decoration: const InputDecoration(
+              hintText: "Search Pokémon by name...",
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.search),
+            ),
+            onChanged: (value) {
+              controller.searchQuery.value = value;
+            },
+            onSubmitted: (value) {
+              controller.searchPokemon(value.trim());
+              controller.showSuggestions.value = false;
+            },
+          ),
+        ),
+        // Random button
+        ElevatedButton(
+          onPressed: () => controller.getMultipleRandomPokemon(20),
+          child: const Text("🎲 Random Pokémon"),
+        ),
+        SizedBox(height: 10),
+        Expanded(
+          child: Obx(() {
+            if (!networkController.isConnected.value) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.wifi_off, size: 70, color: Colors.grey),
+                    const SizedBox(height: 10),
+                    Text(
+                      "No internet connection",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (networkController.isConnected.value) {
+                          controller.fetchPokemonList();
+                        }
+                      },
+                      child: Text("Retry"),
+                    ),
+                  ],
+                ),
+              );
+            }
+            if (controller.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (controller.pokemonList.isEmpty) {
+              return const Center(child: Text("No Pokémon found"));
+            }
+
+            if (controller.errorMessage.value.isNotEmpty) {
+              return Center(child: Text(controller.errorMessage.value));
+            }
+
+            return GridView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(8),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.1,
+              ),
+              itemCount:
+                  controller.pokemonList.length +
+                  (controller.isLoadingMore.value ? 1 : 0),
+              controller: scrollController,
+              itemBuilder: (context, index) {
+                if (index == controller.pokemonList.length) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                final pokemon = controller.pokemonList[index];
+                return pokemonCard(pokemon);
+              },
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOverlaySuggestions() {
+    return Positioned(
+      left: 12,
+      right: 12,
+      top: 65, // 👈 Position it below the search bar
+      child: Material(
+        child: Flexible(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 250),
+            child: Container(
+              margin: const EdgeInsets.only(top: 4),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade300,
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: controller.suggestions.length,
+                itemBuilder: (_, index) {
+                  final name = controller.suggestions[index];
+                  return ListTile(
+                    dense: true,
+                    title: Text(name.capitalizeFirst ?? name),
+                    onTap: () {
+                      controller.searchPokemon(name);
+                      controller.showSuggestions.value = false;
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 

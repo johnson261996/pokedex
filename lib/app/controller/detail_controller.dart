@@ -14,6 +14,7 @@ class DetailController extends GetxController {
 
   RxList<String> evolutionList = <String>[].obs;
   RxList<String> weaknesses = <String>[].obs;
+  var description = ''.obs;
 
   @override
   void onInit() {
@@ -29,7 +30,8 @@ class DetailController extends GetxController {
 
     // Step 1: Get species info
     final species = await repository.getPokemonSpecies(name);
-    print("evolution url:${species.evolutionChain.url}");
+    // Save description
+    description.value = species.description;
     // Step 2: Get evolution chain
     final evoChain = await repository.getEvolutionChain(
       species.evolutionChain.url,
@@ -37,19 +39,29 @@ class DetailController extends GetxController {
     evolutionList.value = [];
     evolutionIdMap.clear();
     // Step 3: Parse evolution species names
-    _parseEvolution(evoChain.chain);
+    await _parseEvolution(evoChain.chain);
+
+    evolutionList.refresh();
   }
 
-  void _parseEvolution(EvolutionNode node) async {
-    evolutionList.add(node.speciesName);
+  Future<void> _parseEvolution(EvolutionNode node) async {
+    final name = node.speciesName;
 
-    // fetch ID for image
-    final detail = await repository.getPokemonDetail(node.speciesName);
-    evolutionIdMap[node.speciesName] = detail.id;
-
-    for (var evo in node.evolvesTo) {
-      _parseEvolution(evo);
+    // Add name once
+    if (!evolutionList.contains(name)) {
+      evolutionList.add(name);
     }
+
+    // Fetch ID safely
+    if (!evolutionIdMap.containsKey(name)) {
+      final detail = await repository.getPokemonDetail(name);
+      evolutionIdMap[name] = detail.id;
+    }
+
+    // Recursively parse children – but WAIT for ALL to finish!
+    await Future.wait(
+      node.evolvesTo.map((evoNode) => _parseEvolution(evoNode)),
+    );
   }
 
   void fetchDetail(String name) async {

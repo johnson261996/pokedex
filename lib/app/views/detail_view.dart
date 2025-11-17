@@ -21,6 +21,7 @@ class DetailView extends StatelessWidget {
 
         final detail = controller.pokemonDetail.value!;
         final evoList = controller.evolutionList;
+        final desc = controller.description.value;
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -48,6 +49,12 @@ class DetailView extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
+              Text(
+                desc,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+
+              const SizedBox(height: 16),
 
               /// Basic Info
               Text('Height: ${detail.height}'),
@@ -55,13 +62,14 @@ class DetailView extends StatelessWidget {
 
               const SizedBox(height: 16),
               const Text(
-                "Type:",
+                "Type",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
 
               /// Types
               Wrap(
                 spacing: 8,
+                runSpacing: 8,
                 children:
                     detail.types.map((t) {
                       final typeName = t.name;
@@ -134,13 +142,35 @@ class DetailView extends StatelessWidget {
 
                 SizedBox(
                   height: 130,
-                  child: ListView.builder(
+                  child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: evoList.length,
+                    separatorBuilder: (_, index) {
+                      // Add arrow between items, except after the last
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Center(
+                          child: Text(
+                            "➡",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                     itemBuilder: (_, index) {
                       final name = evoList[index];
+                      final id = controller.evolutionIdMap[name];
 
                       /// Fetch Pokémon detail image by name
+                      if (id == null) {
+                        return const SizedBox(
+                          width: 100,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
                       final img =
                           "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${controller.evolutionIdMap[name] ?? detail.id}.png";
 

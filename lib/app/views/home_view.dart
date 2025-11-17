@@ -165,41 +165,37 @@ class _HomeViewState extends State<HomeView> {
       left: 12,
       right: 12,
       top: 65, // 👈 Position it below the search bar
-      child: Material(
-        child: Flexible(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 250),
-            child: Container(
-              margin: const EdgeInsets.only(top: 4),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade300,
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 250),
+        child: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade300,
+                blurRadius: 6,
+                offset: const Offset(0, 3),
               ),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: controller.suggestions.length,
-                itemBuilder: (_, index) {
-                  final name = controller.suggestions[index];
-                  return ListTile(
-                    dense: true,
-                    title: Text(name.capitalizeFirst ?? name),
-                    onTap: () {
-                      controller.searchPokemon(name);
-                      controller.showSuggestions.value = false;
-                    },
-                  );
+            ],
+          ),
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: controller.suggestions.length,
+            itemBuilder: (_, index) {
+              final name = controller.suggestions[index];
+              return ListTile(
+                dense: true,
+                title: Text(name.capitalizeFirst ?? name),
+                onTap: () {
+                  controller.searchPokemon(name);
+                  controller.showSuggestions.value = false;
                 },
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),

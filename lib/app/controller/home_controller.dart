@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
 import 'package:pokemonapp/data/models/pokemon_list_response.dart';
 import 'package:pokemonapp/data/repository/pokemon_repository.dart';
+import 'package:pokemonapp/utils/sort_type.dart';
 
 class HomeController extends GetxController {
   final PokemonRepository _repository = PokemonRepository();
@@ -21,6 +22,7 @@ class HomeController extends GetxController {
   var errorMessage = ''.obs;
   bool hasMore = true;
   var showSuggestions = false.obs;
+  var sortType = SortType.lowestNumber.obs;
 
   @override
   void onInit() {
@@ -33,6 +35,30 @@ class HomeController extends GetxController {
       showSuggestions.value = true;
       updateSuggestions(searchQuery.value);
     }, time: const Duration(milliseconds: 300));
+  }
+
+  void sortPokemon() {
+    final list = pokemonList;
+
+    switch (sortType.value) {
+      case SortType.lowestNumber:
+        list.sort((a, b) => a.id.compareTo(b.id));
+        break;
+
+      case SortType.highestNumber:
+        list.sort((a, b) => b.id.compareTo(a.id));
+        break;
+
+      case SortType.aToZ:
+        list.sort((a, b) => a.name.compareTo(b.name));
+        break;
+
+      case SortType.zToA:
+        list.sort((a, b) => b.name.compareTo(a.name));
+        break;
+    }
+
+    pokemonList.refresh(); // 🔥 important
   }
 
   // Load all Pokémon names for suggestions
@@ -78,7 +104,7 @@ class HomeController extends GetxController {
       offset = 0;
       hasMore = true;
       pokemonList.clear();
-
+      sortPokemon();
       await _loadPokemon();
     } finally {
       isLoading(false);
@@ -115,6 +141,7 @@ class HomeController extends GetxController {
       final detail = await _repository.getPokemonDetail(item.name);
       pokemonList.add(detail);
     }
+    sortPokemon();
   }
 
   /// Search Pokémon (disables pagination)

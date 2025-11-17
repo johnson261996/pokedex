@@ -5,6 +5,7 @@ import 'package:pokemonapp/app/controller/home_controller.dart';
 import 'package:pokemonapp/app/controller/network_controller.dart';
 import 'package:pokemonapp/app/routes/app_pages.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
+import 'package:pokemonapp/utils/sort_type.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -38,31 +39,58 @@ class _HomeViewState extends State<HomeView> {
     searchController.dispose();
   }
 
+  Future<void> _pullRefresh() async {
+    controller.fetchPokemonList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pokédex"),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () {
-              controller.fetchPokemonList();
+          PopupMenuButton(
+            onSelected: (value) {
+              controller.sortType.value = value;
+              controller.sortPokemon();
             },
+            itemBuilder:
+                (context) => [
+                  const PopupMenuItem(
+                    value: SortType.lowestNumber,
+                    child: Text("Lowest Number"),
+                  ),
+                  const PopupMenuItem(
+                    value: SortType.highestNumber,
+                    child: Text("Highest Number"),
+                  ),
+                  const PopupMenuItem(
+                    value: SortType.aToZ,
+                    child: Text("A → Z"),
+                  ),
+                  const PopupMenuItem(
+                    value: SortType.zToA,
+                    child: Text("Z → A"),
+                  ),
+                ],
+            icon: const Icon(Icons.sort),
           ),
         ],
       ),
-      body: Obx(() {
-        return Stack(
-          children: [
-            _buildMainContent(),
-            // 👇 SUGGESTION DROPDOWN
-            if (controller.showSuggestions.value &&
-                controller.suggestions.isNotEmpty)
-              _buildOverlaySuggestions(),
-          ],
-        );
-      }),
+      body: RefreshIndicator(
+        onRefresh: _pullRefresh,
+        child: Obx(() {
+          return Stack(
+            children: [
+              _buildMainContent(),
+              // 👇 SUGGESTION DROPDOWN
+              if (controller.showSuggestions.value &&
+                  controller.suggestions.isNotEmpty)
+                _buildOverlaySuggestions(),
+            ],
+          );
+        }),
+      ),
     );
   }
 
@@ -237,6 +265,7 @@ class _HomeViewState extends State<HomeView> {
             Text(
               pokemon.name.toUpperCase(),
               style: const TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 18),
           ],

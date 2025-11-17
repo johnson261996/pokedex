@@ -54,6 +54,10 @@ class DetailView extends StatelessWidget {
               Text('Weight: ${detail.weight}'),
 
               const SizedBox(height: 16),
+              const Text(
+                "Type:",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
 
               /// Types
               Wrap(
@@ -77,6 +81,27 @@ class DetailView extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
+              const Text(
+                "Weaknesses",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children:
+                    controller.weaknesses
+                        .map(
+                          (w) => Chip(
+                            label: Text(
+                              w.capitalize!,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: PokemonTypeColor.get(w),
+                          ),
+                        )
+                        .toList(),
+              ),
+              const SizedBox(height: 16),
 
               /// Abilities
               Text(
@@ -84,6 +109,15 @@ class DetailView extends StatelessWidget {
               ),
 
               const SizedBox(height: 24),
+              const Text(
+                "Stats",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+
+              ...detail.stats
+                  .map((s) => statBar(s.name.capitalize!, s.baseStat))
+                  .toList(),
 
               /// Evolution Section
               if (evoList.isNotEmpty) ...[
@@ -92,6 +126,11 @@ class DetailView extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
+                if (controller.evolutionList.length <= 1)
+                  const Text(
+                    "This Pokémon does not evolve.",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
 
                 SizedBox(
                   height: 130,
@@ -133,6 +172,22 @@ class DetailView extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  Widget statBar(String label, int value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("$label: $value"),
+        SizedBox(
+          height: 8,
+          child: LinearProgressIndicator(
+            value: value / 200, // max base stat ~200
+          ),
+        ),
+        SizedBox(height: 12),
+      ],
     );
   }
 }

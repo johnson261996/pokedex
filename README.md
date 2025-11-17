@@ -18,11 +18,11 @@ A beautifully designed Flutter application that displays detailed Pokémon infor
 
 ## 📸 Screenshots
 
-```
-assets/screenshots/home.jpg  
-assets/screenshots/favourite.jpg
-assets/screenshots/details.jpg
-```
+Home            |  Favourite | Details
+:-------------------------:|:-------------------------:|:-------------------------:
+![screenshot](assets/screenshots/home.jpg) |  ![screenshot](assets/screenshots/favourite.jpg) | ![screenshot](assets/screenshots/details.jpg)
+
+
 
 ---
 
@@ -81,10 +81,9 @@ This app uses the official free Pokémon API:
 ## 📚 Packages Used
 
 * `dio` — API calls
-* `provider` — state management
+* `get` — state management
 * `cached_network_image` — image caching
-* `google_fonts` — custom fonts
-* `lottie` — animations (if used)
+* `connectivity_plus` —  to discover network connectivity types that can be used.
 
 ---
 

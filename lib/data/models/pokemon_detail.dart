@@ -4,7 +4,8 @@ class PokemonDetail {
   final int height;
   final int weight;
   final String url;
-    final String imageUrl;
+  final String imageUrl;
+  final List<PokemonStat> stats;
   final List<PokemonType> types;
   final List<PokemonAbility> abilities;
 
@@ -14,8 +15,8 @@ class PokemonDetail {
     required this.height,
     required this.weight,
     required this.url,
-        required this.imageUrl,
-
+    required this.imageUrl,
+    required this.stats,
     required this.types,
     required this.abilities,
   });
@@ -26,37 +27,47 @@ class PokemonDetail {
       name: json['name'],
       height: json['height'],
       weight: json['weight'],
-       url: 'https://pokeapi.co/api/v2/pokemon/${json['id']}/',
-        imageUrl: json["sprites"]["other"]["official-artwork"]["front_default"] ??
+      url: 'https://pokeapi.co/api/v2/pokemon/${json['id']}/',
+      imageUrl:
+          json["sprites"]["other"]["official-artwork"]["front_default"] ??
           'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png',
+      stats:
+          (json['stats'] as List).map((e) => PokemonStat.fromJson(e)).toList(),
       types: List<PokemonType>.from(
-         json['types'].map((x) => PokemonType.fromJson(x))
+        json['types'].map((x) => PokemonType.fromJson(x)),
       ),
       abilities: List<PokemonAbility>.from(
-         json['abilities'].map((x) => PokemonAbility.fromJson(x))
+        json['abilities'].map((x) => PokemonAbility.fromJson(x)),
       ),
     );
+  }
+}
+
+class PokemonStat {
+  final String name;
+  final int baseStat;
+
+  PokemonStat({required this.name, required this.baseStat});
+
+  factory PokemonStat.fromJson(Map<String, dynamic> json) {
+    return PokemonStat(name: json['stat']['name'], baseStat: json['base_stat']);
   }
 }
 
 class PokemonType {
   final String name;
-  PokemonType({ required this.name });
+  PokemonType({required this.name});
 
   factory PokemonType.fromJson(Map<String, dynamic> json) {
-    return PokemonType(
-      name: json['type']['name'],
-    );
+    return PokemonType(name: json['type']['name']);
   }
 }
 
 class PokemonAbility {
   final String name;
-  PokemonAbility({ required this.name });
+  PokemonAbility({required this.name});
 
   factory PokemonAbility.fromJson(Map<String, dynamic> json) {
-    return PokemonAbility(
-      name: json['ability']['name'],
-    );
+    return PokemonAbility(name: json['ability']['name']);
   }
 }

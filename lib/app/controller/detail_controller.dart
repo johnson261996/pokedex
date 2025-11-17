@@ -13,6 +13,7 @@ class DetailController extends GetxController {
   Map<String, int> evolutionIdMap = {};
 
   RxList<String> evolutionList = <String>[].obs;
+  RxList<String> weaknesses = <String>[].obs;
 
   @override
   void onInit() {
@@ -20,6 +21,7 @@ class DetailController extends GetxController {
     final String name = Get.arguments as String;
     fetchDetail(name);
     loadPokemon(name);
+    loadWeakness(name);
   }
 
   Future<void> loadPokemon(String name) async {
@@ -61,5 +63,23 @@ class DetailController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> loadWeakness(String name) async {
+    final detail = await repository.getPokemonDetail(name);
+
+    Set<String> weak = {};
+
+    for (var t in detail.types) {
+      final typeData = await repository.getTypeWeakness(t.name);
+
+      final damage = typeData["damage_relations"];
+
+      for (var x in damage["double_damage_from"]) {
+        weak.add(x["name"]);
+      }
+    }
+
+    weaknesses.value = weak.toList();
   }
 }

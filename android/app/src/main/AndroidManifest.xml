@@ -2,7 +2,7 @@
     <application
         android:label="pokemonapp"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/splash">
         <activity
             android:name=".MainActivity"
             android:exported="true"

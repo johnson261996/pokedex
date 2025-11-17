@@ -225,7 +225,14 @@ class _HomeViewState extends State<HomeView> {
                 favController.toggleFavorite(pokemon);
               },
             ),
-            Expanded(child: Image.network(pokemon.imageUrl, height: 100)),
+            Expanded(
+              child: FadeInImage.assetNetwork(
+                placeholder:
+                    'assets/icons/ball.png', // Path to your local placeholder image
+                image: pokemon.imageUrl, // URL of the network image
+                fit: BoxFit.cover, // Adjust as needed
+              ),
+            ),
             const SizedBox(height: 8),
             Text(
               pokemon.name.toUpperCase(),

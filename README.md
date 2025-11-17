@@ -82,7 +82,6 @@ This app uses the official free Pokémon API:
 
 * `dio` — API calls
 * `get` — state management
-* `cached_network_image` — image caching
 * `connectivity_plus` —  to discover network connectivity types that can be used.
 
 ---
@@ -119,7 +118,7 @@ Feel free to submit issues or pull requests to improve the project.
 
 This project is licensed under the MIT License.
 
----
 
-If you want a **badge version**, **emoji-rich version**, or **GIF demo version**, just tell me!
+
+
 

@@ -13,6 +13,8 @@ A beautifully designed Flutter application that displays detailed Pokémon infor
 * 🎨 **Modern UI with animations**
 * ⚡ **Fast API integration** (PokéAPI)
 * 📱 **Responsive layout** for all screen sizes
+* 🌙 **Dark theme support**
+* 📦 **Hive** Local storage for Favorites
 
 ---
 
@@ -41,7 +43,7 @@ lib/
  │     ├── providers/  (network calls)
  │     └── repositories/
  └── utils/
-       └── constants.dart
+
 
 ```
 
@@ -83,7 +85,7 @@ This app uses the official free Pokémon API:
 * `dio` — API calls
 * `get` — state management
 * `connectivity_plus` —  to discover network connectivity types that can be used.
-
+* `Hive` — Local storage
 ---
 
 ## 📦 Build Release

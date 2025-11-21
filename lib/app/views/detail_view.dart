@@ -49,10 +49,11 @@ class DetailView extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-              Text(
-                desc,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
+              if (desc.isNotEmpty)
+                Text(
+                  desc,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
 
               const SizedBox(height: 16),
 

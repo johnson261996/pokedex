@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/favorites_controller.dart';
 import 'package:pokemonapp/app/controller/home_controller.dart';
 import 'package:pokemonapp/app/controller/network_controller.dart';
+import 'package:pokemonapp/app/controller/theme_controller.dart';
 import 'package:pokemonapp/app/routes/app_pages.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
 import 'package:pokemonapp/utils/sort_type.dart';
+import 'package:pokemonapp/utils/type_colors.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -16,7 +18,7 @@ class _HomeViewState extends State<HomeView> {
   final HomeController controller = Get.put(HomeController());
   final favController = Get.find<FavoritesController>();
   final networkController = Get.find<NetworkController>();
-
+  final themeCtrl = Get.find<ThemeController>();
   final ScrollController scrollController = ScrollController();
   final TextEditingController searchController = TextEditingController();
 
@@ -33,7 +35,6 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     scrollController.dispose();
     searchController.dispose();
@@ -49,6 +50,12 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: const Text("Pokédex"),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              themeCtrl.isDark.value ? Icons.dark_mode : Icons.light_mode,
+            ),
+            onPressed: themeCtrl.toggleTheme,
+          ),
           PopupMenuButton(
             onSelected: (value) {
               controller.sortType.value = value;
@@ -267,7 +274,30 @@ class _HomeViewState extends State<HomeView> {
               style: const TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 10),
+
+            /// Types
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children:
+                  pokemon.types.map((t) {
+                    final typeName = t.name;
+                    final color = PokemonTypeColor.get(typeName);
+
+                    return Chip(
+                      label: Text(
+                        typeName.capitalize!,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      backgroundColor: color,
+                    );
+                  }).toList(),
+            ),
+            const SizedBox(height: 10),
           ],
         ),
       ),

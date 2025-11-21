@@ -31,16 +31,17 @@ class DetailController extends GetxController {
     // Step 1: Get species info
     final species = await repository.getPokemonSpecies(name);
     // Save description
-    description.value = species.description;
-    // Step 2: Get evolution chain
-    final evoChain = await repository.getEvolutionChain(
-      species.evolutionChain.url,
-    );
-    evolutionList.value = [];
-    evolutionIdMap.clear();
-    // Step 3: Parse evolution species names
-    await _parseEvolution(evoChain.chain);
-
+    description.value = species?.description ?? '';
+    if (species?.evolutionChain.url != null) {
+      // Step 2: Get evolution chain
+      final evoChain = await repository.getEvolutionChain(
+        species?.evolutionChain.url ?? '',
+      );
+      evolutionList.value = [];
+      evolutionIdMap.clear();
+      // Step 3: Parse evolution species names
+      await _parseEvolution(evoChain.chain);
+    }
     evolutionList.refresh();
   }
 

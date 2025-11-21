@@ -31,7 +31,7 @@ class HomeController extends GetxController {
     fetchAllPokemonNames(); // load names first
     // Debounce search input (delay 300 ms)
     debounce(searchQuery, (_) {
-      fetchPokemons();
+      // fetchPokemons();
       showSuggestions.value = true;
       updateSuggestions(searchQuery.value);
     }, time: const Duration(milliseconds: 300));
@@ -141,7 +141,6 @@ class HomeController extends GetxController {
       final detail = await _repository.getPokemonDetail(item.name);
       pokemonList.add(detail);
     }
-    sortPokemon();
   }
 
   /// Search Pokémon (disables pagination)

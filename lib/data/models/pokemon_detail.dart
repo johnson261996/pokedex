@@ -1,12 +1,26 @@
-class PokemonDetail {
+import 'package:hive/hive.dart';
+
+part 'pokemon_detail.g.dart'; // Make sure the file name matches your actual file name
+
+@HiveType(typeId: 0) // Unique type ID for PokemonDetail
+class PokemonDetail extends HiveObject {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final int height;
+  @HiveField(3)
   final int weight;
+  @HiveField(4)
   final String url;
+  @HiveField(5)
   final String imageUrl;
+  @HiveField(6)
   final List<PokemonStat> stats;
+  @HiveField(7)
   final List<PokemonType> types;
+  @HiveField(8)
   final List<PokemonAbility> abilities;
 
   PokemonDetail({
@@ -21,6 +35,7 @@ class PokemonDetail {
     required this.abilities,
   });
 
+  // Include the fromJson factory as well if you need it for network requests
   factory PokemonDetail.fromJson(Map<String, dynamic> json) {
     return PokemonDetail(
       id: json['id'],
@@ -43,8 +58,11 @@ class PokemonDetail {
   }
 }
 
-class PokemonStat {
+@HiveType(typeId: 1) // Unique type ID for PokemonStat
+class PokemonStat extends HiveObject {
+  @HiveField(0)
   final String name;
+  @HiveField(1)
   final int baseStat;
 
   PokemonStat({required this.name, required this.baseStat});
@@ -54,7 +72,9 @@ class PokemonStat {
   }
 }
 
-class PokemonType {
+@HiveType(typeId: 2) // Unique type ID for PokemonType
+class PokemonType extends HiveObject {
+  @HiveField(0)
   final String name;
   PokemonType({required this.name});
 
@@ -63,7 +83,9 @@ class PokemonType {
   }
 }
 
-class PokemonAbility {
+@HiveType(typeId: 3) // Unique type ID for PokemonAbility
+class PokemonAbility extends HiveObject {
+  @HiveField(0)
   final String name;
   PokemonAbility({required this.name});
 

@@ -41,9 +41,21 @@ class PokeApiProvider {
     return PokemonDetail.fromJson(response.data);
   }
 
-  Future<PokemonSpecies> fetchPokemonSpecies(String name) async {
-    final response = await _dio.get("pokemon-species/$name");
-    return PokemonSpecies.fromJson(response.data);
+  Future<PokemonSpecies?> fetchPokemonSpecies(String name) async {
+    try {
+      final response = await _dio.get("pokemon-species/$name");
+      return PokemonSpecies.fromJson(response.data);
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 404) {
+        print("Species not found.");
+        return null;
+      }
+      rethrow;
+    } catch (e) {
+      // Handle other types of errors
+      print('Generic error: $e');
+    }
+    return null;
   }
 
   Future<EvolutionChainResponse> fetchEvolutionChain(String url) async {

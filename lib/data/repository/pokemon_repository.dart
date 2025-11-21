@@ -24,7 +24,7 @@ class PokemonRepository {
     return _provider.fetchPokemonDetailByName(name.toLowerCase());
   }
 
-  Future<PokemonSpecies> getPokemonSpecies(String name) {
+  Future<PokemonSpecies?> getPokemonSpecies(String name) {
     return _provider.fetchPokemonSpecies(name);
   }
 

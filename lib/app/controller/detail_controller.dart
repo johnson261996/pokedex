@@ -25,6 +25,12 @@ class DetailController extends GetxController {
     loadWeakness(name);
   }
 
+  void changePokemon(String name) {
+    fetchDetail(name);
+    loadPokemon(name);
+    loadWeakness(name);
+  }
+
   Future<void> loadPokemon(String name) async {
     pokemon.value = await repository.getPokemonDetail(name);
 

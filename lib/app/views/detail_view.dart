@@ -176,8 +176,13 @@ class DetailView extends StatelessWidget {
                           "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${controller.evolutionIdMap[name] ?? detail.id}.png";
 
                       return GestureDetector(
-                        onTap: () {
-                          Get.toNamed("/detail", arguments: name);
+                        onTap: () async {
+                          controller.isLoading.value = true;
+                          controller.changePokemon(name);
+                          await Future.delayed(
+                            const Duration(milliseconds: 300),
+                          );
+                          controller.isLoading.value = false;
                         },
                         child: Container(
                           width: 100,

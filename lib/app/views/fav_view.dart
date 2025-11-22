@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/favorites_controller.dart';
+import 'package:pokemonapp/app/routes/app_pages.dart';
 
 class FavoritesView extends StatelessWidget {
   @override
@@ -25,25 +26,30 @@ class FavoritesView extends StatelessWidget {
           itemBuilder: (_, index) {
             final pokemon = favController.favoriteList[index];
 
-            return Card(
-              elevation: 3,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(child: Image.network(pokemon.imageUrl, height: 100)),
-                  Text(
-                    pokemon.name.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+            return GestureDetector(
+              onTap: () => Get.toNamed(Routes.DETAIL, arguments: pokemon.name),
+              child: Card(
+                elevation: 3,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: Image.network(pokemon.imageUrl, height: 100),
                     ),
-                  ),
-                  Text("#${pokemon.id}"),
-                  IconButton(
-                    icon: const Icon(Icons.remove_circle),
-                    onPressed: () => favController.toggleFavorite(pokemon),
-                  ),
-                ],
+                    Text(
+                      pokemon.name.toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text("#${pokemon.id}"),
+                    IconButton(
+                      icon: const Icon(Icons.remove_circle),
+                      onPressed: () => favController.toggleFavorite(pokemon),
+                    ),
+                  ],
+                ),
               ),
             );
           },

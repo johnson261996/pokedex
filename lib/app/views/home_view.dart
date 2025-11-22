@@ -206,7 +206,7 @@ class _HomeViewState extends State<HomeView> {
           margin: const EdgeInsets.only(top: 4),
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: themeCtrl.isDark.value ? Colors.black : Colors.white,
             border: Border.all(color: Colors.grey.shade300),
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
@@ -224,7 +224,12 @@ class _HomeViewState extends State<HomeView> {
               final name = controller.suggestions[index];
               return ListTile(
                 dense: true,
-                title: Text(name.capitalizeFirst ?? name),
+                title: Text(
+                  name.capitalizeFirst ?? name,
+                  style: TextStyle(
+                    color: themeCtrl.isDark.value ? Colors.white : Colors.black,
+                  ),
+                ),
                 onTap: () {
                   controller.searchPokemon(name);
                   controller.showSuggestions.value = false;

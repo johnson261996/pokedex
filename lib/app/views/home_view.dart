@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/favorites_controller.dart';
@@ -37,7 +40,6 @@ class _HomeViewState extends State<HomeView> {
   void dispose() {
     super.dispose();
     scrollController.dispose();
-    searchController.dispose();
   }
 
   Future<void> _pullRefresh() async {
@@ -84,19 +86,28 @@ class _HomeViewState extends State<HomeView> {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: _pullRefresh,
-        child: Obx(() {
-          return Stack(
-            children: [
-              _buildMainContent(),
-              // 👇 SUGGESTION DROPDOWN
-              if (controller.showSuggestions.value &&
-                  controller.suggestions.isNotEmpty)
-                _buildOverlaySuggestions(),
-            ],
-          );
-        }),
+      body: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(
+          dragDevices: {
+            PointerDeviceKind.touch,
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.trackpad,
+          },
+        ),
+        child: RefreshIndicator(
+          onRefresh: _pullRefresh,
+          child: Obx(() {
+            return Stack(
+              children: [
+                _buildMainContent(),
+                // 👇 SUGGESTION DROPDOWN
+                if (controller.showSuggestions.value &&
+                    controller.suggestions.isNotEmpty)
+                  _buildOverlaySuggestions(),
+              ],
+            );
+          }),
+        ),
       ),
     );
   }
@@ -172,9 +183,9 @@ class _HomeViewState extends State<HomeView> {
             return GridView.builder(
               shrinkWrap: true,
               padding: const EdgeInsets.all(8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 1.1,
+                childAspectRatio: Platform.isWindows ? 1.1 : 0.75,
               ),
               itemCount:
                   controller.pokemonList.length +
@@ -290,16 +301,38 @@ class _HomeViewState extends State<HomeView> {
                     final typeName = t.name;
                     final color = PokemonTypeColor.get(typeName);
 
-                    return Chip(
-                      label: Text(
-                        typeName.capitalize!,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      backgroundColor: color,
-                    );
+                    return Platform.isWindows
+                        ? Chip(
+                          label: Text(
+                            typeName.capitalize!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          backgroundColor: color,
+                        )
+                        : Chip(
+                          labelPadding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: -2,
+                          ),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          padding: EdgeInsets.zero,
+                          visualDensity: const VisualDensity(
+                            horizontal: -4,
+                            vertical: -4,
+                          ),
+                          label: Text(
+                            typeName.capitalize!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          backgroundColor: color,
+                        );
                   }).toList(),
             ),
             const SizedBox(height: 10),

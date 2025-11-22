@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/detail_controller.dart';
@@ -124,9 +126,9 @@ class DetailView extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              ...detail.stats
-                  .map((s) => statBar(s.name.capitalize!, s.baseStat))
-                  .toList(),
+              ...detail.stats.map(
+                (s) => statBar(s.name.capitalize!, s.baseStat),
+              ),
 
               /// Evolution Section
               if (evoList.isNotEmpty) ...[
@@ -143,64 +145,73 @@ class DetailView extends StatelessWidget {
 
                 SizedBox(
                   height: 130,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: evoList.length,
-                    separatorBuilder: (_, index) {
-                      // Add arrow between items, except after the last
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Center(
-                          child: Text(
-                            "➡",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                        PointerDeviceKind.trackpad,
+                      },
+                    ),
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: evoList.length,
+                      separatorBuilder: (_, index) {
+                        // Add arrow between items, except after the last
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Center(
+                            child: Text(
+                              "➡",
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                    itemBuilder: (_, index) {
-                      final name = evoList[index];
-                      final id = controller.evolutionIdMap[name];
-
-                      /// Fetch Pokémon detail image by name
-                      if (id == null) {
-                        return const SizedBox(
-                          width: 100,
-                          child: Center(child: CircularProgressIndicator()),
                         );
-                      }
-                      final img =
-                          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${controller.evolutionIdMap[name] ?? detail.id}.png";
+                      },
+                      itemBuilder: (_, index) {
+                        final name = evoList[index];
+                        final id = controller.evolutionIdMap[name];
 
-                      return GestureDetector(
-                        onTap: () async {
-                          controller.isLoading.value = true;
-                          controller.changePokemon(name);
-                          await Future.delayed(
-                            const Duration(milliseconds: 300),
+                        /// Fetch Pokémon detail image by name
+                        if (id == null) {
+                          return const SizedBox(
+                            width: 100,
+                            child: Center(child: CircularProgressIndicator()),
                           );
-                          controller.isLoading.value = false;
-                        },
-                        child: Container(
-                          width: 100,
-                          margin: const EdgeInsets.only(right: 12),
-                          child: Column(
-                            children: [
-                              Image.network(img, height: 80),
-                              const SizedBox(height: 6),
-                              Text(
-                                name.capitalize ?? "",
-                                style: const TextStyle(fontSize: 14),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                        }
+                        final img =
+                            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${controller.evolutionIdMap[name] ?? detail.id}.png";
+
+                        return GestureDetector(
+                          onTap: () async {
+                            controller.isLoading.value = true;
+                            controller.changePokemon(name);
+                            await Future.delayed(
+                              const Duration(milliseconds: 300),
+                            );
+                            controller.isLoading.value = false;
+                          },
+                          child: Container(
+                            width: 100,
+                            margin: const EdgeInsets.only(right: 12),
+                            child: Column(
+                              children: [
+                                Image.network(img, height: 80),
+                                const SizedBox(height: 6),
+                                Text(
+                                  name.capitalize ?? "",
+                                  style: const TextStyle(fontSize: 14),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],

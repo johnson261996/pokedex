@@ -11,7 +11,17 @@ class DetailView extends StatelessWidget {
     final DetailController controller = Get.find();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Pokémon Detail')),
+      appBar: AppBar(
+        title: Obx(() {
+          final detail = controller.pokemonDetail.value;
+          if (detail == null) {
+            return Text("Loading...");
+          }
+          return Text(
+            '#${detail.id} ${detail.name.capitalizeFirst ?? detail.name}',
+          );
+        }),
+      ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -30,17 +40,6 @@ class DetailView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Pokémon Title
-              Text(
-                '#${detail.id} ${detail.name.capitalizeFirst}',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
               /// Pokémon Image
               Center(
                 child: Image.network(

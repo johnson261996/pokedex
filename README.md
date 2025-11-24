@@ -1,4 +1,4 @@
-# 🧩 Pokédex Flutter App
+# <img src="assets/icons/ball.png" width="24" height="24" /> Pokédex Flutter App
 
 A beautifully designed Flutter application that displays detailed Pokémon information using the PokéAPI. Users can browse Pokémon, view stats, filter by type, and enjoy a smooth, responsive UI across Android and iOS devices.
 
@@ -15,16 +15,23 @@ A beautifully designed Flutter application that displays detailed Pokémon infor
 * 📱 **Responsive layout** for all screen sizes
 * 🌙 **Dark theme support**
 * 📦 **Hive** Local storage for Favorites
-
+* 📶 **Sort**  by ascending/descending id/name
+* 📦 **Filter** by type (Fire, Water, Grass etc.)
 ---
 
 ## 📸 Screenshots
 
+**Mobile** 
+
+Home            |  Favourite | Details
+:-------------------------:|:-------------------------:|:-------------------------:
+![screenshot](assets/screenshots/home_windows.png) |  ![screenshot](assets/screenshots/favourite_windows.png) | ![screenshot](assets/screenshots/details_windows.png)
+
+**Windows** 
+
 Home            |  Favourite | Details
 :-------------------------:|:-------------------------:|:-------------------------:
 ![screenshot](assets/screenshots/home.jpg) |  ![screenshot](assets/screenshots/favourite.jpg) | ![screenshot](assets/screenshots/details.jpg)
-
-
 
 ---
 

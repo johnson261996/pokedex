@@ -23,6 +23,30 @@ class HomeController extends GetxController {
   bool hasMore = true;
   var showSuggestions = false.obs;
   var sortType = SortType.lowestNumber.obs;
+  List<PokemonDetail> pokemonListBackup = [];
+  final List<String> allTypes = [
+    "normal",
+    "fire",
+    "water",
+    "grass",
+    "electric",
+    "ice",
+    "fighting",
+    "poison",
+    "ground",
+    "flying",
+    "psychic",
+    "bug",
+    "rock",
+    "ghost",
+    "dragon",
+    "dark",
+    "steel",
+    "fairy",
+  ];
+
+  /// Selected Pokémon types for filtering
+  var selectedTypeFilter = <String>[].obs;
 
   @override
   void onInit() {
@@ -31,7 +55,6 @@ class HomeController extends GetxController {
     fetchAllPokemonNames(); // load names first
     // Debounce search input (delay 300 ms)
     debounce(searchQuery, (_) {
-      // fetchPokemons();
       showSuggestions.value = true;
       updateSuggestions(searchQuery.value);
     }, time: const Duration(milliseconds: 300));
@@ -61,20 +84,45 @@ class HomeController extends GetxController {
     pokemonList.refresh(); // 🔥 important
   }
 
+  void clearFilter() {
+    selectedTypeFilter.clear();
+    fetchPokemonList();
+  }
+
+  void applyFilter() {
+    // First apply search if exists
+    List<PokemonDetail> result = List.from(
+      pokemonListBackup,
+    ); // stored original list
+
+    if (searchQuery.value.isNotEmpty) {
+      result =
+          result
+              .where((p) => p.name.contains(searchQuery.value.toLowerCase()))
+              .toList();
+    }
+
+    // Apply type filter if selected
+    if (selectedTypeFilter.isNotEmpty) {
+      result =
+          result.where((pokemon) {
+            final pokemonTypes = pokemon.types.map((t) => t.name).toList();
+            return selectedTypeFilter.every(
+              (selected) => pokemonTypes.contains(selected),
+            );
+          }).toList();
+    }
+
+    pokemonList.assignAll(result);
+    hasMore = false;
+    sortPokemon(); // Ensure sorting still active
+  }
+
   // Load all Pokémon names for suggestions
   void fetchAllPokemonNames() async {
     try {
       final response = await _repository.getPokemonList(limit: 1500, offset: 0);
       allPokemonNames.value = response.results.map((e) => e.name).toList();
-    } catch (e) {
-      errorMessage.value = "something went wrong";
-    }
-  }
-
-  void fetchPokemons() async {
-    try {
-      final response = await _repository.getPokemonList(limit: 50, offset: 0);
-      searchList.value = response.results;
     } catch (e) {
       errorMessage.value = "something went wrong";
     }
@@ -140,6 +188,7 @@ class HomeController extends GetxController {
     for (var item in response.results) {
       final detail = await _repository.getPokemonDetail(item.name);
       pokemonList.add(detail);
+      pokemonListBackup = List.from(pokemonList);
     }
   }
 
@@ -160,6 +209,7 @@ class HomeController extends GetxController {
           response.results.first.name,
         );
         pokemonList.add(detail);
+        pokemonListBackup = List.from(pokemonList);
       }
 
       hasMore = false; // disable load more during search
@@ -180,6 +230,7 @@ class HomeController extends GetxController {
         int id = random.nextInt(1025) + 1;
         final detail = await _repository.getPokemonDetail(id.toString());
         pokemonList.add(detail);
+        pokemonListBackup = List.from(pokemonList);
       }
     } finally {
       isLoading(false);

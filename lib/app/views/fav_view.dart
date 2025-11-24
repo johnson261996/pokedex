@@ -20,7 +20,7 @@ class FavoritesView extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 0.9,
+            childAspectRatio: 1.1,
           ),
           itemCount: favController.favoriteList.length,
           itemBuilder: (_, index) {

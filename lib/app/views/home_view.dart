@@ -84,6 +84,11 @@ class _HomeViewState extends State<HomeView> {
                 ],
             icon: const Icon(Icons.sort),
           ),
+          // Filter Types Button
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            onPressed: () => _openFilterSheet(),
+          ),
         ],
       ),
       body: ScrollConfiguration(
@@ -112,6 +117,69 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  void _openFilterSheet() {
+    final controller = Get.find<HomeController>();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      builder: (_) {
+        return Obx(
+          () => Padding(
+            padding: const EdgeInsets.all(5),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Filter by Type",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children:
+                      controller.allTypes.map((type) {
+                        final selected = controller.selectedTypeFilter.contains(
+                          type,
+                        );
+                        return FilterChip(
+                          label: Text(type.toUpperCase()),
+                          selected: selected,
+                          selectedColor: PokemonTypeColor.get(type),
+                          backgroundColor: PokemonTypeColor.get(type),
+                          onSelected: (value) {
+                            if (value) {
+                              controller.selectedTypeFilter.add(type);
+                            } else {
+                              controller.selectedTypeFilter.remove(type);
+                            }
+                            controller.applyFilter();
+                          },
+                        );
+                      }).toList(),
+                ),
+
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    controller.selectedTypeFilter.clear();
+                    controller.fetchPokemonList();
+                    Get.back();
+                  },
+                  child: const Text("Clear Filters"),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Column _buildMainContent() {
     return Column(
       children: [
@@ -119,10 +187,20 @@ class _HomeViewState extends State<HomeView> {
           padding: const EdgeInsets.all(8.0),
           child: TextField(
             controller: searchController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: "Search Pokémon by name...",
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.search),
+              suffixIcon:
+                  searchController.text.isNotEmpty
+                      ? IconButton(
+                        onPressed: () {
+                          searchController.clear();
+                          controller.showSuggestions.value = false;
+                        },
+                        icon: Icon(Icons.close),
+                      )
+                      : SizedBox(),
             ),
             onChanged: (value) {
               controller.searchQuery.value = value;
@@ -133,6 +211,7 @@ class _HomeViewState extends State<HomeView> {
             },
           ),
         ),
+
         // Random button
         ElevatedButton(
           onPressed: () => controller.getMultipleRandomPokemon(20),

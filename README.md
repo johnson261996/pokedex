@@ -16,18 +16,18 @@ A beautifully designed Flutter application that displays detailed Pokémon infor
 * 🌙 **Dark theme support**
 * 📦 **Hive** Local storage for Favorites
 * 📶 **Sort**  by ascending/descending id/name
-* 📦 **Filter** by type (Fire, Water, Grass etc.)
+* 📊 **Filter** by type (Fire, Water, Grass etc.)
 ---
 
 ## 📸 Screenshots
 
-**Mobile** 
+**Windows** 
 
 Home            |  Favourite | Details
 :-------------------------:|:-------------------------:|:-------------------------:
 ![screenshot](assets/screenshots/home_windows.png) |  ![screenshot](assets/screenshots/favourite_windows.png) | ![screenshot](assets/screenshots/details_windows.png)
 
-**Windows** 
+**Mobile** 
 
 Home            |  Favourite | Details
 :-------------------------:|:-------------------------:|:-------------------------:

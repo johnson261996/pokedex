@@ -48,70 +48,152 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Pokédex"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              themeCtrl.isDark.value ? Icons.dark_mode : Icons.light_mode,
+    return GestureDetector(
+      onTap: () {
+        controller.showRecent.value = false;
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Pokédex"),
+          actions: <Widget>[
+            IconButton(
+              icon: Obx(
+                () => Icon(
+                  themeCtrl.isDark.value ? Icons.dark_mode : Icons.light_mode,
+                ),
+              ),
+              onPressed: themeCtrl.toggleTheme,
             ),
-            onPressed: themeCtrl.toggleTheme,
+            PopupMenuButton(
+              position:
+                  PopupMenuPosition.over, // Place the menu below the button
+              offset: Offset(
+                0,
+                40,
+              ), // Shift the menu 50 logical pixels downwards
+              onSelected: (value) {
+                controller.sortType.value = value;
+                controller.sortPokemon();
+              },
+              itemBuilder:
+                  (context) => [
+                    const PopupMenuItem(
+                      value: SortType.lowestNumber,
+                      child: Text("Lowest Number"),
+                    ),
+                    const PopupMenuItem(
+                      value: SortType.highestNumber,
+                      child: Text("Highest Number"),
+                    ),
+                    const PopupMenuItem(
+                      value: SortType.aToZ,
+                      child: Text("A → Z"),
+                    ),
+                    const PopupMenuItem(
+                      value: SortType.zToA,
+                      child: Text("Z → A"),
+                    ),
+                  ],
+              icon: const Icon(Icons.sort),
+            ),
+            // Filter Types Button
+            IconButton(
+              icon: const Icon(Icons.filter_alt),
+              onPressed: () => _openFilterSheet(),
+            ),
+          ],
+        ),
+        body: RefreshIndicator(
+          onRefresh: _pullRefresh,
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              dragDevices: {
+                PointerDeviceKind.touch,
+                PointerDeviceKind.mouse,
+                PointerDeviceKind.trackpad,
+              },
+            ),
+            child: Obx(() {
+              return Stack(
+                children: [
+                  _buildMainContent(),
+                  if (controller.searchQuery.isEmpty &&
+                      controller.recentSearches.isNotEmpty &&
+                      controller.showRecent.value)
+                    recentSearches(),
+
+                  // 👇 SUGGESTION DROPDOWN
+                  if (controller.showSuggestions.value &&
+                      controller.suggestions.isNotEmpty)
+                    _buildOverlaySuggestions(),
+                ],
+              );
+            }),
           ),
-          PopupMenuButton(
-            onSelected: (value) {
-              controller.sortType.value = value;
-              controller.sortPokemon();
-            },
-            itemBuilder:
-                (context) => [
-                  const PopupMenuItem(
-                    value: SortType.lowestNumber,
-                    child: Text("Lowest Number"),
+        ),
+      ),
+    );
+  }
+
+  Positioned recentSearches() {
+    return Positioned(
+      left: 12,
+      right: 12,
+      top: 65,
+      child: Container(
+        margin: const EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: themeCtrl.isDark.value ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16, bottom: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Recent searches",
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                   ),
-                  const PopupMenuItem(
-                    value: SortType.highestNumber,
-                    child: Text("Highest Number"),
-                  ),
-                  const PopupMenuItem(
-                    value: SortType.aToZ,
-                    child: Text("A → Z"),
-                  ),
-                  const PopupMenuItem(
-                    value: SortType.zToA,
-                    child: Text("Z → A"),
+                  TextButton(
+                    onPressed: controller.clearAllRecentSearches,
+                    child: Text(
+                      "Clear all",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ],
-            icon: const Icon(Icons.sort),
-          ),
-          // Filter Types Button
-          IconButton(
-            icon: const Icon(Icons.filter_alt),
-            onPressed: () => _openFilterSheet(),
-          ),
-        ],
-      ),
-      body: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(
-          dragDevices: {
-            PointerDeviceKind.touch,
-            PointerDeviceKind.mouse,
-            PointerDeviceKind.trackpad,
-          },
-        ),
-        child: RefreshIndicator(
-          onRefresh: _pullRefresh,
-          child: Obx(() {
-            return Stack(
-              children: [
-                _buildMainContent(),
-                // 👇 SUGGESTION DROPDOWN
-                if (controller.showSuggestions.value &&
-                    controller.suggestions.isNotEmpty)
-                  _buildOverlaySuggestions(),
-              ],
-            );
-          }),
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: controller.recentSearches.length,
+              itemBuilder: (_, index) {
+                final name = controller.recentSearches[index];
+                return ListTile(
+                  leading: Icon(Icons.history),
+                  title: Text(name.capitalizeFirst!),
+                  trailing: IconButton(
+                    onPressed: () {
+                      controller.removeRecentSearch(name);
+                    },
+                    icon: Icon(Icons.close),
+                  ),
+                  onTap: () => controller.onRecentSearchSelected(name),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -166,8 +248,11 @@ class _HomeViewState extends State<HomeView> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    controller.selectedTypeFilter.clear();
-                    controller.fetchPokemonList();
+                    if (controller.selectedTypeFilter.isNotEmpty) {
+                      controller.selectedTypeFilter.clear();
+                      controller.fetchPokemonList();
+                    }
+
                     Get.back();
                   },
                   child: const Text("Clear Filters"),
@@ -187,16 +272,23 @@ class _HomeViewState extends State<HomeView> {
           padding: const EdgeInsets.all(8.0),
           child: TextField(
             controller: searchController,
+
+            onTap: () {
+              controller.showRecent.value = true;
+            },
             decoration: InputDecoration(
               hintText: "Search Pokémon by name...",
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.search),
               suffixIcon:
-                  searchController.text.isNotEmpty
+                  controller.showClose.value
                       ? IconButton(
                         onPressed: () {
                           searchController.clear();
                           controller.showSuggestions.value = false;
+                          controller.showClose.value = false;
+                          controller.showRecent.value = true;
+                          controller.searchQuery.value = '';
                         },
                         icon: Icon(Icons.close),
                       )
@@ -204,6 +296,11 @@ class _HomeViewState extends State<HomeView> {
             ),
             onChanged: (value) {
               controller.searchQuery.value = value;
+              if (value.isNotEmpty) {
+                controller.showClose.value = true;
+              } else {
+                controller.showClose.value = false;
+              }
             },
             onSubmitted: (value) {
               controller.searchPokemon(value.trim());
@@ -261,6 +358,7 @@ class _HomeViewState extends State<HomeView> {
 
             return GridView.builder(
               shrinkWrap: true,
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(8),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -311,16 +409,23 @@ class _HomeViewState extends State<HomeView> {
             shrinkWrap: true,
             itemCount: controller.suggestions.length,
             itemBuilder: (_, index) {
-              final name = controller.suggestions[index];
+              final item = controller.suggestions[index];
+              final name = item["name"];
+              final id = controller.extractId(item["url"]);
+              final imageUrl =
+                  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png";
+
               return ListTile(
-                dense: true,
                 title: Text(
-                  name.capitalizeFirst ?? name,
+                  name,
                   style: TextStyle(
                     color: themeCtrl.isDark.value ? Colors.white : Colors.black,
                   ),
                 ),
+                leading: Image.network(imageUrl, width: 50, height: 50),
+                subtitle: Text("#$id"),
                 onTap: () {
+                  searchController.text = name;
                   controller.searchPokemon(name);
                   controller.showSuggestions.value = false;
                 },

@@ -1,26 +1,21 @@
 class PokemonListResponse {
+  final List<PokemonListItem> results;
 
-  final List<NamedAPIResource> results;
-
-  PokemonListResponse({
-
-    required this.results,
-  });
+  PokemonListResponse({required this.results});
 
   factory PokemonListResponse.fromJson(Map<String, dynamic> json) {
     return PokemonListResponse(
-
-      results: List<NamedAPIResource>.from(
-        json['results'].map((x) => NamedAPIResource.fromJson(x))
+      results: List<PokemonListItem>.from(
+        json['results'].map((x) => PokemonListItem.fromJson(x)),
       ),
     );
   }
 
-    /// Handle single Pokémon search result
+  /// Handle single Pokémon search result
   factory PokemonListResponse.fromSingle(Map<String, dynamic> json) {
     return PokemonListResponse(
       results: [
-        NamedAPIResource(
+        PokemonListItem(
           name: json['name'],
           url: "https://pokeapi.co/api/v2/pokemon/${json['id']}/",
         ),
@@ -29,15 +24,12 @@ class PokemonListResponse {
   }
 }
 
-class NamedAPIResource {
+class PokemonListItem {
   final String name;
   final String url;
-  NamedAPIResource({ required this.name, required this.url });
+  PokemonListItem({required this.name, required this.url});
 
-  factory NamedAPIResource.fromJson(Map<String, dynamic> json) {
-    return NamedAPIResource(
-      name: json['name'],
-      url: json['url'],
-    );
+  factory PokemonListItem.fromJson(Map<String, dynamic> json) {
+    return PokemonListItem(name: json['name'], url: json['url']);
   }
 }

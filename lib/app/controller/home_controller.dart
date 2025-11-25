@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
 import 'package:pokemonapp/data/models/pokemon_list_response.dart';
@@ -10,18 +11,20 @@ class HomeController extends GetxController {
   final PokemonRepository _repository = PokemonRepository();
 
   var pokemonList = <PokemonDetail>[].obs;
-  var searchList = <NamedAPIResource>[].obs;
 
   var isLoading = false.obs;
   var isLoadingMore = false.obs;
-  var suggestions = <String>[].obs; // 👈 suggestions list
-  var allPokemonNames = <String>[].obs; // 👈 all names for autocomplete
+
+  var suggestions = <Map<String, dynamic>>[].obs; // 👈 suggestions list
+  var allPokemonList = <PokemonListItem>[].obs; // 👈 all names for autocomplete
   int limit = 20;
   int offset = 0;
   var searchQuery = ''.obs;
   var errorMessage = ''.obs;
   bool hasMore = true;
   var showSuggestions = false.obs;
+  var showClose = false.obs;
+  var showRecent = false.obs;
   var sortType = SortType.lowestNumber.obs;
   List<PokemonDetail> pokemonListBackup = [];
   final List<String> allTypes = [
@@ -47,6 +50,7 @@ class HomeController extends GetxController {
 
   /// Selected Pokémon types for filtering
   var selectedTypeFilter = <String>[].obs;
+  var recentSearches = <String>[].obs;
 
   @override
   void onInit() {
@@ -56,8 +60,33 @@ class HomeController extends GetxController {
     // Debounce search input (delay 300 ms)
     debounce(searchQuery, (_) {
       showSuggestions.value = true;
+      showRecent.value = true;
       updateSuggestions(searchQuery.value);
     }, time: const Duration(milliseconds: 300));
+  }
+
+  void removeRecentSearch(String name) {
+    recentSearches.remove(name);
+  }
+
+  void clearAllRecentSearches() {
+    recentSearches.clear();
+  }
+
+  void addRecentSearch(String name) {
+    // Avoid duplicates, move to top
+    recentSearches.remove(name);
+    recentSearches.insert(0, name);
+
+    // Limit to last 10 saved searches
+    if (recentSearches.length > 10) {
+      recentSearches.removeLast();
+    }
+  }
+
+  void onRecentSearchSelected(String name) {
+    searchPokemon(name);
+    showRecent.value = false;
   }
 
   void sortPokemon() {
@@ -122,10 +151,15 @@ class HomeController extends GetxController {
   void fetchAllPokemonNames() async {
     try {
       final response = await _repository.getPokemonList(limit: 1500, offset: 0);
-      allPokemonNames.value = response.results.map((e) => e.name).toList();
+      allPokemonList.value = response.results.map((e) => e).toList();
     } catch (e) {
       errorMessage.value = "something went wrong";
     }
+  }
+
+  String extractId(String url) {
+    final parts = url.split('/');
+    return parts[parts.length - 2]; // ID is before last slash
   }
 
   // Update suggestions list as user types
@@ -135,11 +169,16 @@ class HomeController extends GetxController {
       showSuggestions.value = false;
       return;
     }
-
     suggestions.value =
-        allPokemonNames
-            .where((name) => name.toLowerCase().contains(query.toLowerCase()))
+        allPokemonList
+            .where((p) => p.name.contains(query.toLowerCase()))
             .take(15) // limit to 10 suggestions
+            .map(
+              (item) => {
+                "name": item.name,
+                "url": item.url, // contains Pokémon ID
+              },
+            )
             .toList();
   }
 
@@ -202,7 +241,7 @@ class HomeController extends GetxController {
     try {
       isLoading(true);
       pokemonList.clear();
-
+      addRecentSearch(query);
       final response = await _repository.getPokemonList(query: query);
       if (response.results.isNotEmpty) {
         final detail = await _repository.getPokemonDetail(

@@ -17,7 +17,7 @@ class HomeController extends GetxController {
 
   var suggestions = <Map<String, dynamic>>[].obs; // 👈 suggestions list
   var allPokemonList = <PokemonListItem>[].obs; // 👈 all names for autocomplete
-  int limit = 20;
+  int limit = 40;
   int offset = 0;
   var searchQuery = ''.obs;
   var errorMessage = ''.obs;
@@ -27,6 +27,7 @@ class HomeController extends GetxController {
   var showRecent = false.obs;
   var sortType = SortType.lowestNumber.obs;
   List<PokemonDetail> pokemonListBackup = [];
+  var isFiltering = false.obs;
   final List<String> allTypes = [
     "normal",
     "fire",
@@ -89,9 +90,10 @@ class HomeController extends GetxController {
     showRecent.value = false;
   }
 
-  void sortPokemon() {
+  Future<void> sortPokemon() async {
     final list = pokemonList;
-
+    isFiltering.value = true;
+    await Future.delayed(const Duration(milliseconds: 300));
     switch (sortType.value) {
       case SortType.lowestNumber:
         list.sort((a, b) => a.id.compareTo(b.id));
@@ -111,6 +113,7 @@ class HomeController extends GetxController {
     }
 
     pokemonList.refresh(); // 🔥 important
+    isFiltering.value = false;
   }
 
   void clearFilter() {
@@ -171,7 +174,12 @@ class HomeController extends GetxController {
     }
     suggestions.value =
         allPokemonList
-            .where((p) => p.name.contains(query.toLowerCase()))
+            //.where((p) => p.name.contains(query.toLowerCase()))
+            .where((item) {
+              final name = item.name.toString().toLowerCase();
+              return name.startsWith(query.toLowerCase()) &&
+                  !name.contains("-mega");
+            })
             .take(15) // limit to 10 suggestions
             .map(
               (item) => {

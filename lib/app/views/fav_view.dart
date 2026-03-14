@@ -9,7 +9,9 @@ class FavoritesView extends StatelessWidget {
     final favController = Get.find<FavoritesController>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Favorite Pokémon")),
+      appBar: AppBar(title: const Text("Favorite Pokémon"),actions: [GestureDetector(
+        onTap: () => favController.clearAll(),
+        child: Icon(Icons.delete))],),
 
       body: Obx(() {
         if (favController.favoriteList.isEmpty) {

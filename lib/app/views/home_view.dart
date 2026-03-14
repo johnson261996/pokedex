@@ -356,6 +356,10 @@ class _HomeViewState extends State<HomeView> {
               return Center(child: Text(controller.errorMessage.value));
             }
 
+            if (controller.isFiltering.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
             return GridView.builder(
               shrinkWrap: true,
               physics: const AlwaysScrollableScrollPhysics(),

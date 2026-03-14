@@ -32,4 +32,9 @@ class FavoritesController extends GetxController {
   bool isFavorite(PokemonDetail pokemon) {
     return favoriteList.any((p) => p.id == pokemon.id);
   }
+
+  void clearAll(){
+    favoriteList.clear()
+    ;
+  }
 }

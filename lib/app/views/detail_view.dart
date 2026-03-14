@@ -53,16 +53,94 @@ class DetailView extends StatelessWidget {
               if (desc.isNotEmpty)
                 Text(
                   desc,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
                 ),
 
               const SizedBox(height: 16),
+              // Pokémon Details Card
+              Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Pokemon Details',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Height: ${_formatHeight(detail.height)}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Weight: ${_formatWeight(detail.weight)}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
 
-              /// Basic Info
-              Text('Height: ${detail.height}'),
-              Text('Weight: ${detail.weight}'),
+                      Obx(
+                        () => Text(
+                          'Category: ${controller.category.value.isNotEmpty ? controller.category.value : 'Unknown'}',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text('Abilities: ', style: TextStyle(fontSize: 16)),
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 0,
+                        children:
+                            detail.abilities.map((ability) {
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    ability.name.capitalize!,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.info_outline, size: 20),
+                                    onPressed:
+                                        () => _showAbilityDialog(
+                                          controller,
+                                          context,
+                                          ability.name,
+                                        ),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                      ),
+
+                      Row(
+                        children: [
+                          Text('Gender:', style: TextStyle(fontSize: 16)),
+                          Icon(Icons.male, color: Colors.blue, size: 16),
+                          SizedBox(width: 4),
+                          Icon(Icons.female, color: Colors.pink, size: 16),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
               const SizedBox(height: 16),
+
               const Text(
                 "Type",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -221,6 +299,20 @@ class DetailView extends StatelessWidget {
     );
   }
 
+  String _formatHeight(int heightDecimeters) {
+    // Convert decimeters to inches: 1 dm = 3.937 inches
+    double inches = heightDecimeters * 3.937;
+    int feet = inches ~/ 12;
+    int remainingInches = (inches % 12).round();
+    return "$feet' ${remainingInches.toString().padLeft(2, '0')}\"";
+  }
+
+  String _formatWeight(int weightHectograms) {
+    // Convert hectograms to lbs: 1 hg = 0.220462 lbs
+    double lbs = weightHectograms * 0.220462;
+    return "${lbs.toStringAsFixed(1)} lbs";
+  }
+
   Widget statBar(String label, int value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,6 +326,45 @@ class DetailView extends StatelessWidget {
         ),
         SizedBox(height: 12),
       ],
+    );
+  }
+
+  void _showAbilityDialog(
+    DetailController controller,
+    BuildContext context,
+    String abilityName,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(abilityName.capitalize!),
+          content: FutureBuilder(
+            future: controller.getAbilityDetails(abilityName),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox(
+                  height: 50,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              } else if (snapshot.hasError) {
+                return Text('Error loading ability description');
+              } else if (snapshot.hasData) {
+                final ability = snapshot.data!;
+                return Text(ability.description);
+              } else {
+                return const Text('No description available');
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

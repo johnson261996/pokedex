@@ -4,6 +4,7 @@ import 'package:pokemonapp/data/providers/poke_api_provider.dart';
 
 import '../models/pokemon_list_response.dart';
 import '../models/pokemon_detail.dart';
+import '../models/ability.dart';
 
 class PokemonRepository {
   final PokeApiProvider _provider = PokeApiProvider();
@@ -34,5 +35,9 @@ class PokemonRepository {
 
   Future<Map<String, dynamic>> getTypeWeakness(String type) {
     return _provider.fetchType(type);
+  }
+
+  Future<Ability> getAbility(String name) {
+    return _provider.fetchAbility(name);
   }
 }

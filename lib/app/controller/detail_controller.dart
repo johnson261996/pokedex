@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:pokemonapp/data/models/evolution_chain.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
+import 'package:pokemonapp/data/models/ability.dart';
 import 'package:pokemonapp/data/repository/pokemon_repository.dart';
 
 class DetailController extends GetxController {
@@ -15,6 +16,7 @@ class DetailController extends GetxController {
   RxList<String> evolutionList = <String>[].obs;
   RxList<String> weaknesses = <String>[].obs;
   var description = ''.obs;
+  var category = ''.obs;
 
   @override
   void onInit() {
@@ -38,6 +40,8 @@ class DetailController extends GetxController {
     final species = await repository.getPokemonSpecies(name);
     // Save description
     description.value = species?.description ?? '';
+    // Save category
+    category.value = species?.category ?? '';
     if (species?.evolutionChain.url != null) {
       // Step 2: Get evolution chain
       final evoChain = await repository.getEvolutionChain(
@@ -100,5 +104,9 @@ class DetailController extends GetxController {
     }
 
     weaknesses.value = weak.toList();
+  }
+
+  Future<Ability> getAbilityDetails(String name) {
+    return repository.getAbility(name);
   }
 }

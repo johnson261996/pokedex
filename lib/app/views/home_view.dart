@@ -311,7 +311,7 @@ class _HomeViewState extends State<HomeView> {
 
         // Random button
         ElevatedButton(
-          onPressed: () => controller.getMultipleRandomPokemon(20),
+          onPressed: () => controller.getMultipleRandomPokemon(100),
           child: const Text("🎲 Random Pokémon"),
         ),
         SizedBox(height: 10),

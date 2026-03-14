@@ -1,8 +1,9 @@
 class PokemonSpecies {
   final EvolutionChain evolutionChain;
   final String description;
+  final String category;
 
-  PokemonSpecies({required this.evolutionChain, required this.description});
+  PokemonSpecies({required this.evolutionChain, required this.description, required this.category});
 
   factory PokemonSpecies.fromJson(Map<String, dynamic> json) {
     // extract English description
@@ -14,11 +15,21 @@ class PokemonSpecies {
       }
     }
 
+    // extract English category (genus)
+    String category = "";
+    for (var entry in json["genera"]) {
+      if (entry["language"]["name"] == "en") {
+        category = entry["genus"];
+        break;
+      }
+    }
+
     // clean weird characters like \n and \f
     desc = desc.replaceAll("\n", " ").replaceAll("\f", " ");
     return PokemonSpecies(
       evolutionChain: EvolutionChain.fromJson(json["evolution_chain"]),
       description: desc,
+      category: category,
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:pokemonapp/data/models/pokemon_species.dart';
 import 'package:pokemonapp/utils/constants.dart';
 import '../models/pokemon_list_response.dart';
 import '../models/pokemon_detail.dart';
+import '../models/ability.dart';
 
 class PokeApiProvider {
   final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
@@ -61,5 +62,10 @@ class PokeApiProvider {
   Future<EvolutionChainResponse> fetchEvolutionChain(String url) async {
     final response = await Dio().get(url); // full URL
     return EvolutionChainResponse.fromJson(response.data);
+  }
+
+  Future<Ability> fetchAbility(String name) async {
+    final response = await _dio.get('ability/$name');
+    return Ability.fromJson(response.data);
   }
 }

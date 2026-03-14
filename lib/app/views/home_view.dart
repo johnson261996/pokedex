@@ -473,19 +473,7 @@ class _HomeViewState extends State<HomeView> {
                   onPressed: () {
                     final compareController = Get.put(CompareController());
 
-                    compareController.addPokemon({
-                      "id": pokemon.id,
-                      "name": pokemon.name,
-                      "image": pokemon.imageUrl,
-                      "stats": pokemon.stats,
-                    });
-
-                    Get.snackbar(
-                      "Added",
-                      "${pokemon.name} added for comparison",
-                      snackPosition: SnackPosition.TOP,
-                      duration: const Duration(seconds: 1),
-                    );
+                    compareController.addPokemon(pokemon);
                   },
                 ),
               ],

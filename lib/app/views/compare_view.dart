@@ -34,7 +34,7 @@ class CompareView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children:
                 controller.selectedPokemons.map((pokemon) {
-                  final stats = (pokemon["stats"] as List<PokemonStat>);
+                  final stats = pokemon.stats;
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -56,7 +56,7 @@ class CompareView extends StatelessWidget {
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.network(
-                                      pokemon["image"],
+                                      pokemon.imageUrl,
                                       width: 60,
                                       height: 60,
                                       fit: BoxFit.cover,
@@ -82,7 +82,7 @@ class CompareView extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          pokemon["name"],
+                                          pokemon.name,
                                           style: Theme.of(
                                             context,
                                           ).textTheme.headlineMedium?.copyWith(
@@ -93,11 +93,11 @@ class CompareView extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          "#${pokemon["id"]}",
+                                          "#${pokemon.id}",
                                           style:
                                               Theme.of(
                                                 context,
-                                              ).textTheme.bodyLarge
+                                              ).textTheme.bodyLarge,
                                         ),
                                       ],
                                     ),
@@ -107,9 +107,7 @@ class CompareView extends StatelessWidget {
                                       Icons.remove_circle_outline,
                                     ),
                                     onPressed: () {
-                                      controller.removePokemon(
-                                        pokemon["id"] as int,
-                                      );
+                                      controller.removePokemon(pokemon.id);
                                     },
                                   ),
                                 ],
@@ -130,19 +128,21 @@ class CompareView extends StatelessWidget {
                                         children: [
                                           Text(
                                             _prettyStatName(stat.name),
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.headlineMedium?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                ),
                                           ),
                                           Text(
                                             stat.baseStat.toString(),
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.headlineMedium?.copyWith(
-                                              color: Colors.grey.shade700,
-                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium
+                                                ?.copyWith(
+                                                  color: Colors.grey.shade700,
+                                                ),
                                           ),
                                         ],
                                       ),
@@ -163,7 +163,7 @@ class CompareView extends StatelessWidget {
                                     ],
                                   ),
                                 );
-                              }).toList(),
+                              }),
                             ],
                           ),
                         ),

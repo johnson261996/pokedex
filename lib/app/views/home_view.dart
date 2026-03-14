@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pokemonapp/app/controller/compare_controller.dart';
 import 'package:pokemonapp/app/controller/favorites_controller.dart';
 import 'package:pokemonapp/app/controller/home_controller.dart';
 import 'package:pokemonapp/app/controller/network_controller.dart';
@@ -451,19 +452,45 @@ class _HomeViewState extends State<HomeView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(
-              icon: Obx(
-                () => Icon(
-                  favController.isFavorite(pokemon)
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: Colors.red,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Obx(
+                    () => Icon(
+                      favController.isFavorite(pokemon)
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color: Colors.red,
+                    ),
+                  ),
+                  onPressed: () {
+                    favController.toggleFavorite(pokemon);
+                  },
                 ),
-              ),
-              onPressed: () {
-                favController.toggleFavorite(pokemon);
-              },
+                IconButton(
+                  icon: const Icon(Icons.compare_arrows),
+                  onPressed: () {
+                    final compareController = Get.put(CompareController());
+
+                    compareController.addPokemon({
+                      "id": pokemon.id,
+                      "name": pokemon.name,
+                      "image": pokemon.imageUrl,
+                      "stats": pokemon.stats,
+                    });
+
+                    Get.snackbar(
+                      "Added",
+                      "${pokemon.name} added for comparison",
+                      snackPosition: SnackPosition.TOP,
+                      duration: const Duration(seconds: 1),
+                    );
+                  },
+                ),
+              ],
             ),
+
             Expanded(
               child: FadeInImage.assetNetwork(
                 placeholder:

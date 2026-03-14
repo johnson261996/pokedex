@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:pokemonapp/app/controller/compare_controller.dart';
 import 'package:pokemonapp/app/controller/favorites_controller.dart';
 import 'package:pokemonapp/app/controller/home_controller.dart';
 import 'package:pokemonapp/app/controller/navigation_controller.dart';
@@ -11,6 +12,7 @@ class HomeBinding extends Bindings {
     Get.put(NavigationController());
     Get.put(NetworkController());
     Get.put(FavoritesController());
+        Get.put(CompareController());
     Get.lazyPut<HomeController>(() => HomeController());
     Get.put(ThemeController());
   }

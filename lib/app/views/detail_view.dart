@@ -271,6 +271,7 @@ class DetailView extends StatelessWidget {
                           onTap: () async {
                             controller.isLoading.value = true;
                             controller.changePokemon(name);
+                            cardController.fetchCards(name);
                             await Future.delayed(
                               const Duration(milliseconds: 300),
                             );
@@ -298,17 +299,22 @@ class DetailView extends StatelessWidget {
                 ),
               ],
               Obx(() {
-                if (controller.isLoading.value) {
+                if (cardController.isCardLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
+               if(cardController.cards.isEmpty) {
+                  return const SizedBox();
+                }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                          Text(
-                "${detail.name.capitalizeFirst} Cards",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
+                    Text(
+                      "${detail.name.capitalizeFirst} Cards",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
 
                     SizedBox(
                       height: 220,
@@ -319,9 +325,15 @@ class DetailView extends StatelessWidget {
                           final card = cardController.cards[index];
                           return GestureDetector(
                             onTap: () async {
-                              final didLoad = await cardController.fetchCardDetail(card.id);
-                              if (didLoad && cardController.cardDetail.value != null) {
-                                Get.to(() => CardDetailPage(card: cardController.cardDetail.value!));
+                              final didLoad = await cardController
+                                  .fetchCardDetail(card.id);
+                              if (didLoad &&
+                                  cardController.cardDetail.value != null) {
+                                Get.to(
+                                  () => CardDetailPage(
+                                    card: cardController.cardDetail.value!,
+                                  ),
+                                );
                               } else {
                                 Get.snackbar(
                                   'Card not found',
@@ -335,13 +347,19 @@ class DetailView extends StatelessWidget {
                               margin: const EdgeInsets.only(right: 12),
                               child: Card(
                                 elevation: 4,
-                                child: card.image.isNotEmpty
-                                    ? Image.network(card.imageUrl, fit: BoxFit.cover)
-                                    : Container(
-                                        height: 200,
-                                        color: Colors.grey[300],
-                                        child: const Icon(Icons.image_not_supported),
-                                      ),
+                                child:
+                                    card.image.isNotEmpty
+                                        ? Image.network(
+                                          card.imageUrl,
+                                          fit: BoxFit.cover,
+                                        )
+                                        : Container(
+                                          height: 200,
+                                          color: Colors.grey[300],
+                                          child: const Icon(
+                                            Icons.image_not_supported,
+                                          ),
+                                        ),
                               ),
                             ),
                           );

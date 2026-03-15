@@ -6,6 +6,8 @@ import 'package:pokemonapp/app/views/fav_view.dart';
 import 'home_view.dart';
 
 class HomeWrapperView extends StatelessWidget {
+  const HomeWrapperView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<NavigationController>();

@@ -4,6 +4,8 @@ import 'package:pokemonapp/app/controller/favorites_controller.dart';
 import 'package:pokemonapp/app/routes/app_pages.dart';
 
 class FavoritesView extends StatelessWidget {
+  const FavoritesView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final favController = Get.find<FavoritesController>();

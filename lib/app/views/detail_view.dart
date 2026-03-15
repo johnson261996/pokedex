@@ -2,13 +2,18 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pokemonapp/app/controller/card_controller.dart';
 import 'package:pokemonapp/app/controller/detail_controller.dart';
+import 'package:pokemonapp/app/views/card_detail_view.dart';
 import 'package:pokemonapp/utils/type_colors.dart';
 
 class DetailView extends StatelessWidget {
+  const DetailView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final DetailController controller = Get.find();
+    final CardController cardController = Get.find();
 
     return Scaffold(
       appBar: AppBar(
@@ -292,6 +297,60 @@ class DetailView extends StatelessWidget {
                   ),
                 ),
               ],
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                          Text(
+                "${detail.name.capitalizeFirst} Cards",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+
+                    SizedBox(
+                      height: 220,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: cardController.cards.length,
+                        itemBuilder: (_, index) {
+                          final card = cardController.cards[index];
+                          return GestureDetector(
+                            onTap: () async {
+                              final didLoad = await cardController.fetchCardDetail(card.id);
+                              if (didLoad && cardController.cardDetail.value != null) {
+                                Get.to(() => CardDetailPage(card: cardController.cardDetail.value!));
+                              } else {
+                                Get.snackbar(
+                                  'Card not found',
+                                  'Unable to load details for this card.',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                              }
+                            },
+                            child: Container(
+                              width: 150,
+                              margin: const EdgeInsets.only(right: 12),
+                              child: Card(
+                                elevation: 4,
+                                child: card.image.isNotEmpty
+                                    ? Image.network(card.imageUrl, fit: BoxFit.cover)
+                                    : Container(
+                                        height: 200,
+                                        color: Colors.grey[300],
+                                        child: const Icon(Icons.image_not_supported),
+                                      ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
             ],
           ),
         );

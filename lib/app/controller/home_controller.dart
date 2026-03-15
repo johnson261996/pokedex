@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
 import 'package:pokemonapp/data/models/pokemon_list_response.dart';

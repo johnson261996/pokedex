@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pokemonapp/data/models/evolution_chain.dart';
 import 'package:pokemonapp/data/models/pokemon_species.dart';
+import 'package:pokemonapp/data/models/tcg_card.dart';
 import 'package:pokemonapp/utils/constants.dart';
 import '../models/pokemon_list_response.dart';
 import '../models/pokemon_detail.dart';
@@ -8,6 +9,7 @@ import '../models/ability.dart';
 
 class PokeApiProvider {
   final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
+  final Dio _tcgDio = Dio(BaseOptions(baseUrl: tcgApiBaseUrl));
 
   Future<PokemonListResponse> fetchPokemonList({
     int limit = 100,
@@ -67,5 +69,17 @@ class PokeApiProvider {
   Future<Ability> fetchAbility(String name) async {
     final response = await _dio.get('ability/$name');
     return Ability.fromJson(response.data);
+  }
+
+  Future<List<TcgCard>> getCards(String pokemonName) async {
+    final response = await _tcgDio.get(
+        "cards?name=$pokemonName");
+    final data = response.data as List;
+    return data.where((e) => e != null).map((e) => TcgCard.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  Future<TcgCardDetail> getCardDetail(String cardId) async {
+   final response = await _tcgDio.get("cards/$cardId");
+      return TcgCardDetail.fromJson(response.data);
   }
 }

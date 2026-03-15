@@ -1,5 +1,6 @@
 import 'package:pokemonapp/data/models/evolution_chain.dart';
 import 'package:pokemonapp/data/models/pokemon_species.dart';
+import 'package:pokemonapp/data/models/tcg_card.dart';
 import 'package:pokemonapp/data/providers/poke_api_provider.dart';
 
 import '../models/pokemon_list_response.dart';
@@ -40,4 +41,12 @@ class PokemonRepository {
   Future<Ability> getAbility(String name) {
     return _provider.fetchAbility(name);
   }
+
+  Future<List<TcgCard>> getCards(String pokemonName) {
+    return _provider.getCards(pokemonName);
+  }
+
+  Future<TcgCardDetail> getCardDetail(String cardId) {
+    return _provider.getCardDetail(cardId);
+  } 
 }

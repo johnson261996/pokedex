@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pokemonapp/app/controller/card_controller.dart';
 import 'package:pokemonapp/app/controller/compare_controller.dart';
 import 'package:pokemonapp/app/controller/favorites_controller.dart';
 import 'package:pokemonapp/app/controller/home_controller.dart';
@@ -14,6 +15,8 @@ import 'package:pokemonapp/utils/sort_type.dart';
 import 'package:pokemonapp/utils/type_colors.dart';
 
 class HomeView extends StatefulWidget {
+  const HomeView({super.key});
+
   @override
   State<HomeView> createState() => _HomeViewState();
 }
@@ -446,6 +449,8 @@ class _HomeViewState extends State<HomeView> {
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routes.DETAIL, arguments: pokemon.name);
+        final CardController cardController = Get.find();
+        cardController.fetchCards(pokemon.name);
       },
       child: Card(
         elevation: 4,

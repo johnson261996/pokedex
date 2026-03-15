@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/compare_controller.dart';
-import 'package:pokemonapp/data/models/pokemon_detail.dart';
 
 class CompareView extends StatelessWidget {
   final controller = Get.find<CompareController>();
+
+   CompareView({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pokemonapp/app/views/component/card_gallery.dart';
 import 'package:pokemonapp/data/models/tcg_card.dart';
 
 class CardDetailPage extends StatelessWidget {
@@ -11,7 +12,8 @@ class CardDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(card.name)),
-
+      body: CardGallery(cards:  [card], tcgCardDetail: card),
+/* 
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -64,7 +66,7 @@ class CardDetailPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      ), */
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/card_controller.dart';
 import 'package:pokemonapp/app/controller/detail_controller.dart';
 import 'package:pokemonapp/app/views/card_detail_view.dart';
+import 'package:pokemonapp/app/views/component/card_gallery.dart';
 import 'package:pokemonapp/utils/type_colors.dart';
 
 class DetailView extends StatelessWidget {
@@ -302,7 +303,7 @@ class DetailView extends StatelessWidget {
                 if (cardController.isCardLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-               if(cardController.cards.isEmpty) {
+                if (cardController.cards.isEmpty) {
                   return const SizedBox();
                 }
                 return Column(
@@ -325,22 +326,13 @@ class DetailView extends StatelessWidget {
                           final card = cardController.cards[index];
                           return GestureDetector(
                             onTap: () async {
-                              final didLoad = await cardController
-                                  .fetchCardDetail(card.id);
-                              if (didLoad &&
-                                  cardController.cardDetail.value != null) {
-                                Get.to(
-                                  () => CardDetailPage(
-                                    card: cardController.cardDetail.value!,
-                                  ),
-                                );
-                              } else {
-                                Get.snackbar(
-                                  'Card not found',
-                                  'Unable to load details for this card.',
-                                  snackPosition: SnackPosition.BOTTOM,
-                                );
-                              }
+                              await cardController.fetchCardDetail(card.id);
+
+                              Get.to(
+                                () => CardDetailPage(
+                                  card: cardController.cardDetail.value!,
+                                ),
+                              );
                             },
                             child: Container(
                               width: 150,

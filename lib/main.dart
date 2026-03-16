@@ -12,6 +12,7 @@ void main() async {
   Hive.registerAdapter(PokemonAbilityAdapter());
   await Hive.openBox('settings');
   await Hive.openBox('favorites');
+  await Hive.openBox<List>('selectedPokemons');
   runApp(MyApp());
 }
 

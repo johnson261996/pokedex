@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pokemonapp/app/controller/card_controller.dart';
 import 'package:pokemonapp/app/controller/favorites_controller.dart';
 import 'package:pokemonapp/app/routes/app_pages.dart';
 
@@ -11,9 +12,15 @@ class FavoritesView extends StatelessWidget {
     final favController = Get.find<FavoritesController>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Favorite Pokémon"),actions: [GestureDetector(
-        onTap: () => favController.clearAll(),
-        child: Icon(Icons.delete))],),
+      appBar: AppBar(
+        title: const Text("Favorite Pokémon"),
+        actions: [
+          GestureDetector(
+            onTap: () => favController.clearAll(),
+            child: Icon(Icons.delete),
+          ),
+        ],
+      ),
 
       body: Obx(() {
         if (favController.favoriteList.isEmpty) {
@@ -31,7 +38,11 @@ class FavoritesView extends StatelessWidget {
             final pokemon = favController.favoriteList[index];
 
             return GestureDetector(
-              onTap: () => Get.toNamed(Routes.DETAIL, arguments: pokemon.name),
+              onTap: () {
+                Get.toNamed(Routes.DETAIL, arguments: pokemon.name);
+                final CardController cardController = Get.find();
+                cardController.fetchCards(pokemon.name);
+              },
               child: Card(
                 elevation: 3,
                 child: Column(

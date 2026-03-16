@@ -17,6 +17,11 @@ class FavoritesController extends GetxController {
       favoriteList.removeWhere((p) => p.id == pokemon.id);
     } else {
       favoriteList.add(pokemon);
+        Get.snackbar(
+        "Added",
+        "${pokemon.name} added for Favorites",
+        duration: const Duration(seconds: 1),
+      );
     }
     favoritesBox.put('pokemon_list', favoriteList);
   }

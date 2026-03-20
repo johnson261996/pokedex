@@ -6,44 +6,36 @@ import 'package:pokemonapp/app/views/component/rarity_badge.dart';
 import 'package:pokemonapp/data/models/tcg_card.dart';
 
 class PokemonCardWidget extends StatelessWidget {
-
   final TcgCardDetail card;
 
   const PokemonCardWidget({super.key, required this.card});
 
   @override
   Widget build(BuildContext context) {
-
     return Tilt(
       borderRadius: BorderRadius.circular(16),
 
       child: FlipCard(
-
         front: Card(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16)),
+            borderRadius: BorderRadius.circular(16),
+          ),
           elevation: 6,
 
           child: Stack(
             children: [
-
-              Image.network(
-                 card.imageUrl,
-                fit: BoxFit.cover,
-              ),
+              Image.network(card.imageUrl, fit: BoxFit.cover),
 
               Positioned(
                 top: 10,
                 right: 10,
                 child: RarityBadge(rarity: card.rarity),
               ),
-
             ],
           ),
         ),
 
         back: CardBack(card: card),
-
       ),
     );
   }

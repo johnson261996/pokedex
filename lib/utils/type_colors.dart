@@ -22,6 +22,24 @@ class PokemonTypeColor {
     "fairy": Color(0xFFD685AD),
   };
 
+ static String energyIcon(String type) {
+
+  const icons = {
+    "Fire": "🔥",
+    "Water": "💧",
+    "Grass": "🌿",
+    "Lightning": "⚡",
+    "Fighting": "🥊",
+    "Psychic": "🔮",
+    "Colorless": "⭐",
+    "Darkness": "🌑",
+    "Metal": "⚙️",
+    "Fairy": "✨",
+  };
+
+  return icons[type] ?? "⭐";
+}
+
   static Color get(String type) {
     return typeColors[type.toLowerCase()] ?? Colors.grey;
   }

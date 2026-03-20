@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/card_controller.dart';
 import 'package:pokemonapp/app/controller/detail_controller.dart';
 import 'package:pokemonapp/app/views/card_detail_view.dart';
-import 'package:pokemonapp/app/views/component/card_gallery.dart';
 import 'package:pokemonapp/utils/type_colors.dart';
 
 class DetailView extends StatelessWidget {

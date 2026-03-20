@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pokemonapp/app/views/component/attack.dart';
+import 'package:pokemonapp/app/views/component/weakness.dart';
 import 'package:pokemonapp/data/models/tcg_card.dart';
+import 'package:pokemonapp/utils/type_colors.dart';
 
 class CardBack extends StatelessWidget {
   final TcgCardDetail card;
@@ -14,27 +17,85 @@ class CardBack extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            card.name,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          /// HEADER
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                card.name,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              Row(
+                children: [
+                  Text("HP ${card.hp ?? ''}"),
+                  Text(
+                    PokemonTypeColor.energyIcon(card.types?.first ?? ""),
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ],
           ),
 
-          Text("HP ${card.hp ?? '-'}"),
+          const SizedBox(height: 6),
 
-          const SizedBox(height: 10),
-          Text("Set: ${card.set ?? 'Unknown'}"),
+          Text("${card.stage} Pokémon"),
 
-          const SizedBox(height: 10),
+          if (card.evolveFrom != null)
+            Text(
+              "Evolves from: ${card.evolveFrom}",
+              style: const TextStyle(color: Colors.blue),
+            ),
 
-          Text("Rarity: ${card.rarity ?? 'Unknown'}"),
-          const SizedBox(height: 10),
-          Text("Set: ${card.set}"),
-          const SizedBox(height: 10),
-          Text("Illustrator: ${card.illustrator ?? '-'}"),
+          const Divider(),
 
-          const Spacer(),
+          /// ATTACKS
+          ...card.attacks.map((a) => AttackWidget(attack: a)),
 
-          // SetLogo(setId: card.setId),
+          const Divider(),
+
+          /// WEAKNESS ROW
+          weaknessRow(card),
+
+          const SizedBox(height: 12),
+
+          /// SET INFO
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${card.setName}",
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  Text(
+                    "${card.localId}/${card.setOfficialCards} ${card.rarity}",
+                  ),
+                ],
+              ),
+
+              if (card.setSymbol != null && card.setSymbol!.isNotEmpty)
+                Image.network("${card.setSymbol}.png", height: 30),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          /// ILLUSTRATOR
+          Text(
+            "Illustrator: ${card.illustrator}",
+            style: const TextStyle(color: Colors.black54),
+          ),
         ],
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pokemonapp/app/views/component/ability.dart';
 import 'package:pokemonapp/app/views/component/attack.dart';
+import 'package:pokemonapp/app/views/component/rules.dart';
 import 'package:pokemonapp/app/views/component/weakness.dart';
 import 'package:pokemonapp/data/models/tcg_card.dart';
 import 'package:pokemonapp/utils/type_colors.dart';
@@ -42,8 +44,7 @@ class CardBack extends StatelessWidget {
           ),
 
           const SizedBox(height: 6),
-
-          Text("${card.stage} Pokémon"),
+          if (card.stage != null) Text("${card.stage} Pokémon"),
 
           if (card.evolveFrom != null)
             Text(
@@ -51,12 +52,23 @@ class CardBack extends StatelessWidget {
               style: const TextStyle(color: Colors.blue),
             ),
 
+          const SizedBox(height: 6),
+
+          /// ABILITIES
+          if (card.abilities.isNotEmpty) ...[
+            ...card.abilities.map((a) => AbilityWidget(ability: a)),
+          ],
+
           const Divider(),
 
           /// ATTACKS
           ...card.attacks.map((a) => AttackWidget(attack: a)),
 
           const Divider(),
+          if (isSpecialCard(card.name)) ...[
+            /// RULES
+            RuleWidget(name: card.name),
+          ],
 
           /// WEAKNESS ROW
           weaknessRow(card),
@@ -79,7 +91,7 @@ class CardBack extends StatelessWidget {
                   ),
 
                   Text(
-                    "${card.localId}/${card.setOfficialCards} ${card.rarity}",
+                    "${int.parse(card.localId!)}/${card.setOfficialCards} ${card.rarity}",
                   ),
                 ],
               ),
@@ -99,5 +111,15 @@ class CardBack extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  bool isSpecialCard(String name) {
+    final lower = name.toLowerCase();
+
+    return lower.contains("ex") ||
+        lower.contains("gx") ||
+        lower.contains(" v") || // important: space before v
+        lower.contains(" vmax") ||
+        lower.contains(" vstar");
   }
 }

@@ -48,7 +48,7 @@ class PokeApiProvider {
     try {
       final response = await _dio.get("pokemon-species/$name");
       return PokemonSpecies.fromJson(response.data);
-    } on DioError catch (e) {
+    }  on DioError catch (e) {
       if (e.response?.statusCode == 404) {
         print("Species not found.");
         return null;

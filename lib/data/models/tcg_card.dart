@@ -25,6 +25,7 @@ class TcgCardDetail {
   final List<String>? types;
   final List attacks;
   final List weaknesses;
+  final List abilities;
   final int? retreat;
   final String? rarity;
   final String? illustrator;
@@ -48,6 +49,7 @@ class TcgCardDetail {
     this.types,
     required this.attacks,
     required this.weaknesses,
+    required this.abilities,
     this.retreat,
     this.rarity,
     this.illustrator,
@@ -84,6 +86,7 @@ class TcgCardDetail {
 
       attacks: json["attacks"] ?? [],
       weaknesses: json["weaknesses"] ?? [],
+      abilities: json["abilities"] ?? [],
       resistances: json["resistances"] ?? [],
 
       retreat: json["retreat"],

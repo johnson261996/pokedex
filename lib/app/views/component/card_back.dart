@@ -69,6 +69,7 @@ class CardBack extends StatelessWidget {
             /// RULES
             RuleWidget(name: card.name),
           ],
+          const SizedBox(height: 6),
 
           /// WEAKNESS ROW
           weaknessRow(card),
@@ -91,7 +92,7 @@ class CardBack extends StatelessWidget {
                   ),
 
                   Text(
-                    "${int.parse(card.localId!)}/${card.setOfficialCards} ${card.rarity}",
+                    int.tryParse(card.localId!) == null ? card.localId! : "${int.parse(card.localId!)}/${card.setOfficialCards} ${card.rarity}",
                   ),
                 ],
               ),

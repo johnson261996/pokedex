@@ -32,7 +32,7 @@ class AttackWidget extends StatelessWidget {
 
               Expanded(
                 child: Text(
-                  attack["name"],
+                  attack["name"] ?? "",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,

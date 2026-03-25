@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class RuleWidget extends StatelessWidget {
   final String name;
+  final String? suffix;
 
-  const RuleWidget({super.key, required this.name});
+  const RuleWidget({super.key, required this.name, this.suffix});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +33,10 @@ class RuleWidget extends StatelessWidget {
     );
   }
 
+  bool isTagTeam() {
+  return suffix?.toLowerCase().contains("tag team") ?? false;
+}
+
   bool isSpecialCard(String name) {
     final lower = name.toLowerCase();
 
@@ -44,7 +49,8 @@ class RuleWidget extends StatelessWidget {
 
   String extractSpecialType(String name) {
     final lower = name.toLowerCase();
-
+    final s = suffix?.toLowerCase() ?? "";
+    if (s.contains("tag team")) return "TAG TEAM";
     if (lower.endsWith(" vmax")) return "VMAX";
     if (lower.endsWith(" vstar")) return "VSTAR";
     if (lower.endsWith(" ex")) return "EX";
@@ -56,7 +62,12 @@ class RuleWidget extends StatelessWidget {
 
   String getDefaultRule(String name) {
     final lower = name.toLowerCase();
+      final s = suffix?.toLowerCase() ?? "";
 
+    /// ✅ TAG TEAM (highest priority)
+    if (s.contains("tag team")) {
+      return "When your TAG TEAM is Knocked Out, your opponent takes 3 Prize cards.";
+    }
     const specialRules = {' ex': 'EX', ' gx': 'GX', ' v': 'V'};
 
     for (final MapEntry(key: suffix, value: type) in specialRules.entries) {

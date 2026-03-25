@@ -22,6 +22,7 @@ class TcgCardDetail {
   final String? id;
   final String? localId;
   final int? hp;
+  final String? suffix;
   final List<String>? types;
   final List attacks;
   final List weaknesses;
@@ -46,6 +47,7 @@ class TcgCardDetail {
     this.id,
     this.localId,
     this.hp,
+    this.suffix,
     this.types,
     required this.attacks,
     required this.weaknesses,
@@ -80,6 +82,7 @@ class TcgCardDetail {
       illustrator: json["illustrator"] ?? "",
 
       hp: json["hp"],
+      suffix: json["suffix"],
       types: json["types"]?.cast<String>(),
       evolveFrom: json["evolveFrom"],
       stage: json["stage"],

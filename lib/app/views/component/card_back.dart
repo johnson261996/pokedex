@@ -67,7 +67,7 @@ class CardBack extends StatelessWidget {
           const Divider(),
           if (isSpecialCard(card.name)) ...[
             /// RULES
-            RuleWidget(name: card.name),
+            RuleWidget(name: card.name, suffix: card.suffix),
           ],
           const SizedBox(height: 6),
 

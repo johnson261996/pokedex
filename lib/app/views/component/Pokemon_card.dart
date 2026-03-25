@@ -16,6 +16,7 @@ class PokemonCardWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
 
       child: FlipCard(
+        alignment: Alignment.topCenter,
         front: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

@@ -49,7 +49,15 @@ class FavoritesView extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Expanded(
-                      child: Image.network(pokemon.imageUrl, height: 100),
+                      child:
+                          pokemon.imageBytes != null
+                              ? Image.memory(pokemon.imageBytes!)
+                              : Image.network(
+                                pokemon.imageUrl,
+                                errorBuilder:
+                                    (_, __, ___) =>
+                                        const Icon(Icons.image_not_supported),
+                              ),
                     ),
                     Text(
                       pokemon.name.toUpperCase(),

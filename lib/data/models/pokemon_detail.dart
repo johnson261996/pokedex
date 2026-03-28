@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:hive/hive.dart';
 
 part 'pokemon_detail.g.dart'; // Make sure the file name matches your actual file name
@@ -22,6 +24,8 @@ class PokemonDetail extends HiveObject {
   final List<PokemonType> types;
   @HiveField(8)
   final List<PokemonAbility> abilities;
+  @HiveField(9)
+  Uint8List? imageBytes;
 
   PokemonDetail({
     required this.id,
@@ -33,6 +37,7 @@ class PokemonDetail extends HiveObject {
     required this.stats,
     required this.types,
     required this.abilities,
+    this.imageBytes,
   });
 
   // Include the fromJson factory as well if you need it for network requests

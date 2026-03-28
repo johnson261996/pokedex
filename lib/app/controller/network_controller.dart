@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:pokemonapp/app/controller/home_controller.dart';
 
 class NetworkController extends GetxController {
   final Connectivity _connectivity = Connectivity();
 
   var isConnected = true.obs;
+  final HomeController homeController = Get.put(HomeController());
+
 
   @override
   void onInit() {
@@ -19,6 +22,14 @@ class NetworkController extends GetxController {
     /// Listener
     _connectivity.onConnectivityChanged.listen((status) {
       updateConnectionStatus(status);
+      if (isConnected.value) {
+        homeController.fetchPokemonList();
+         homeController.fetchAllPokemonNames();
+      } else {
+        homeController.pokemonList.clear();
+         homeController.allPokemonList.clear();
+      }
+
     });
   }
 

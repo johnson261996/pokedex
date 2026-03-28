@@ -55,8 +55,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchPokemonList();
-    fetchAllPokemonNames(); // load names first
+
     // Debounce search input (delay 300 ms)
     debounce(searchQuery, (_) {
       showSuggestions.value = true;

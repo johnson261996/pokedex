@@ -340,6 +340,7 @@ class _HomeViewState extends State<HomeView> {
                       onPressed: () async {
                         if (networkController.isConnected.value) {
                           controller.fetchPokemonList();
+                          controller.fetchAllPokemonNames();
                         }
                       },
                       child: Text("Retry"),

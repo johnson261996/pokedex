@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/navigation_controller.dart';
 import 'package:pokemonapp/app/views/compare_view.dart';
 import 'package:pokemonapp/app/views/fav_view.dart';
+import 'package:pokemonapp/app/views/settings_view.dart';
 import 'home_view.dart';
 
 class HomeWrapperView extends StatelessWidget {
@@ -16,9 +17,15 @@ class HomeWrapperView extends StatelessWidget {
       () => Scaffold(
         body: IndexedStack(
           index: controller.tabIndex.value,
-          children: [HomeView(), CompareView(), FavoritesView()],
+          children: [
+            HomeView(),
+            CompareView(),
+            FavoritesView(),
+            SettingsPage(),
+          ],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           currentIndex: controller.tabIndex.value,
           onTap: controller.changeTabIndex,
           items: const [
@@ -30,6 +37,10 @@ class HomeWrapperView extends StatelessWidget {
             BottomNavigationBarItem(
               label: "Favorites",
               icon: Icon(Icons.favorite),
+            ),
+            BottomNavigationBarItem(
+              label: "Settings",
+              icon: Icon(Icons.settings),
             ),
           ],
         ),

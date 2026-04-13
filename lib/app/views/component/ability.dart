@@ -51,9 +51,9 @@ class AbilityWidget extends StatelessWidget {
               padding: const EdgeInsets.only(top: 4),
               child: Text(
                 ability["effect"],
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: Colors.black87,
+                  color: Theme.of(context).textTheme.bodySmall?.color,
                 ),
               ),
             ),

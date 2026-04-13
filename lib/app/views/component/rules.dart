@@ -25,7 +25,7 @@ class RuleWidget extends StatelessWidget {
 
             Text(
               rulesToShow,
-              style: const TextStyle(fontSize: 13, color: Colors.black54),
+              style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodySmall?.color),
             ),
           ],
         ],

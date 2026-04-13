@@ -49,7 +49,7 @@ class CardBack extends StatelessWidget {
           if (card.evolveFrom != null)
             Text(
               "Evolves from: ${card.evolveFrom}",
-              style: const TextStyle(color: Colors.blue),
+              style: TextStyle(color: Theme.of(context).primaryColor),
             ),
 
           const SizedBox(height: 6),
@@ -85,8 +85,8 @@ class CardBack extends StatelessWidget {
                 children: [
                   Text(
                     "${card.setName}",
-                    style: const TextStyle(
-                      color: Colors.blue,
+                    style: TextStyle(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -107,7 +107,7 @@ class CardBack extends StatelessWidget {
           /// ILLUSTRATOR
           Text(
             "Illustrator: ${card.illustrator}",
-            style: const TextStyle(color: Colors.black54),
+            style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7)),
           ),
         ],
       ),

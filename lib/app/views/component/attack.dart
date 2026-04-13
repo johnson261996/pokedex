@@ -55,7 +55,7 @@ class AttackWidget extends StatelessWidget {
               padding: const EdgeInsets.only(top: 4),
               child: Text(
                 attack["effect"],
-                style: const TextStyle(fontSize: 13, color: Colors.black54),
+                style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodySmall?.color),
               ),
             ),
         ],

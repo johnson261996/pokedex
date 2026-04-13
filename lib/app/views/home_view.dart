@@ -61,14 +61,7 @@ class _HomeViewState extends State<HomeView> {
         appBar: AppBar(
           title: const Text("Pokédex"),
           actions: <Widget>[
-            IconButton(
-              icon: Obx(
-                () => Icon(
-                  themeCtrl.isDark.value ? Icons.dark_mode : Icons.light_mode,
-                ),
-              ),
-              onPressed: themeCtrl.toggleTheme,
-            ),
+      
             PopupMenuButton(
               position:
                   PopupMenuPosition.over, // Place the menu below the button

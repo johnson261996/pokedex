@@ -60,7 +60,7 @@ class FavoritesView extends StatelessWidget {
                               ),
                     ),
                     Text(
-                      pokemon.name.toUpperCase(),
+                      (pokemon.translatedName.isNotEmpty ? pokemon.translatedName : pokemon.name).toUpperCase(),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

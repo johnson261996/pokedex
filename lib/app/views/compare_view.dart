@@ -81,7 +81,9 @@ class CompareView extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          pokemon.name,
+                                          pokemon.translatedName.isNotEmpty
+                                              ? pokemon.translatedName
+                                              : pokemon.name,
                                           style: Theme.of(
                                             context,
                                           ).textTheme.headlineMedium?.copyWith(

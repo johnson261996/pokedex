@@ -20,16 +20,17 @@ class DetailView extends StatelessWidget {
         title: Obx(() {
           final detail = controller.pokemonDetail.value;
           if (detail == null) {
-            return Text("Loading...");
+            return Text("loading".tr);
           }
+          final displayName = detail.translatedName.isNotEmpty ? detail.translatedName : detail.name;
           return Text(
-            '#${detail.id} ${detail.name.capitalizeFirst ?? detail.name}',
+            '#${detail.id} ${displayName.capitalizeFirst ?? displayName}',
           );
         }),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator());
         }
 
         if (controller.errorMessage.value.isNotEmpty) {
@@ -72,7 +73,7 @@ class DetailView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Pokemon Details',
+                        'pokemon_details'.tr,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -83,13 +84,13 @@ class DetailView extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              'Height: ${_formatHeight(detail.height)}',
+                              '${'height'.tr}: ${_formatHeight(detail.height)}',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
                           Expanded(
                             child: Text(
-                              'Weight: ${_formatWeight(detail.weight)}',
+                              '${'weight'.tr}: ${_formatWeight(detail.weight)}',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -99,12 +100,12 @@ class DetailView extends StatelessWidget {
 
                       Obx(
                         () => Text(
-                          'Category: ${controller.category.value.isNotEmpty ? controller.category.value : 'Unknown'}',
+                          '${'category'.tr}: ${controller.category.value.isNotEmpty ? controller.category.value : 'unknown'.tr}',
                           style: TextStyle(fontSize: 16),
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text('Abilities: ', style: TextStyle(fontSize: 16)),
+                      Text('${'abilities'.tr}: ', style: TextStyle(fontSize: 16)),
                       Wrap(
                         spacing: 12,
                         runSpacing: 0,
@@ -133,7 +134,7 @@ class DetailView extends StatelessWidget {
 
                       Row(
                         children: [
-                          Text('Gender:', style: TextStyle(fontSize: 16)),
+                          Text('${'gender'.tr}:', style: TextStyle(fontSize: 16)),
                           Icon(Icons.male, color: Colors.blue, size: 16),
                           SizedBox(width: 4),
                           Icon(Icons.female, color: Colors.pink, size: 16),
@@ -146,8 +147,8 @@ class DetailView extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              const Text(
-                "Type",
+              Text(
+                "type".tr,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
 
@@ -174,8 +175,8 @@ class DetailView extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-              const Text(
-                "Weaknesses",
+              Text(
+                "weaknesses".tr,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Wrap(
@@ -198,12 +199,12 @@ class DetailView extends StatelessWidget {
 
               /// Abilities
               Text(
-                'Abilities: ${detail.abilities.map((a) => a.name.capitalize).join(', ')}',
+                '${'abilities'.tr}: ${detail.abilities.map((a) => a.name.capitalize).join(', ')}',
               ),
 
               const SizedBox(height: 24),
-              const Text(
-                "Stats",
+              Text(
+                "stats".tr,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
@@ -214,14 +215,14 @@ class DetailView extends StatelessWidget {
 
               /// Evolution Section
               if (evoList.isNotEmpty) ...[
-                const Text(
-                  "Evolution Chain",
+                Text(
+                  "evolution_chain".tr,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
                 if (controller.evolutionList.length <= 1)
-                  const Text(
-                    "This Pokémon does not evolve.",
+                  Text(
+                    "pokemon_no_evolve".tr,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
 
@@ -309,7 +310,7 @@ class DetailView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${detail.name.capitalizeFirst} Cards",
+                      "${detail.name.capitalizeFirst} ${'cards'.tr}",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -411,24 +412,24 @@ class DetailView extends StatelessWidget {
             future: controller.getAbilityDetails(abilityName),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox(
+                return SizedBox(
                   height: 50,
                   child: Center(child: CircularProgressIndicator()),
                 );
               } else if (snapshot.hasError) {
-                return Text('Error loading ability description');
+                return Text('error_loading_ability'.tr);
               } else if (snapshot.hasData) {
                 final ability = snapshot.data!;
                 return Text(ability.description);
               } else {
-                return const Text('No description available');
+                return Text('no_description_available'.tr);
               }
             },
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close'),
+              child: Text('close'.tr),
             ),
           ],
         );

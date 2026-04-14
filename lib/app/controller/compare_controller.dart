@@ -30,13 +30,13 @@ class CompareController extends GetxController {
       selectedPokemons.add(pokemon);
       Get.snackbar(
         "Added",
-        "${pokemon.name} added for comparison",
+        "${pokemon.translatedName.isNotEmpty ? pokemon.translatedName : pokemon.name} added for comparison",
         duration: const Duration(seconds: 1),
       );
     } else {
       Get.snackbar(
         "Already Added",
-        "${pokemon.name} is already added for comparison",
+        "${pokemon.translatedName.isNotEmpty ? pokemon.translatedName : pokemon.name} is already added for comparison",
         duration: const Duration(seconds: 1),
       );
     }

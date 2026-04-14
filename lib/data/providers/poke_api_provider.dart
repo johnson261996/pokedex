@@ -39,9 +39,14 @@ class PokeApiProvider {
     return PokemonDetail.fromJson(response.data);
   }
 
-  Future<PokemonDetail> fetchPokemonDetailByName(String name) async {
+  Future<Map<String, dynamic>> fetchPokemonDetailJson(String name) async {
     final response = await _dio.get('pokemon/$name');
-    return PokemonDetail.fromJson(response.data);
+    return response.data;
+  }
+
+  Future<PokemonDetail> fetchPokemonDetailByName(String name) async {
+    final json = await fetchPokemonDetailJson(name);
+    return PokemonDetail.fromJson(json);
   }
 
   Future<PokemonSpecies?> fetchPokemonSpecies(String name) async {

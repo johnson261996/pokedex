@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:pokemonapp/app/controller/settings_controller.dart';
 import 'package:pokemonapp/app/controller/theme_controller.dart';
 import 'package:pokemonapp/app/views/component/lang_tile.dart';

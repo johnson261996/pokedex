@@ -29,6 +29,11 @@ class SettingsController extends GetxController {
 
     settingsBox.put("langCode", langCode);
     settingsBox.put("countryCode", countryCode);
+    
+    // Refresh Pokemon list to update translated names
+    if (Get.isRegistered<HomeController>()) {
+      homecontroller.fetchPokemonList();
+    }
   }
 
   void toggleAnimations() {

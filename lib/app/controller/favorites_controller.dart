@@ -27,7 +27,7 @@ class FavoritesController extends GetxController {
       favoriteList.add(pokemon);
         Get.snackbar(
         "Added",
-        "${pokemon.name} added for Favorites",
+        "${pokemon.translatedName.isNotEmpty ? pokemon.translatedName : pokemon.name} added for Favorites",
         duration: const Duration(seconds: 1),
       );
     }

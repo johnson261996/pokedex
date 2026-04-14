@@ -490,7 +490,7 @@ class _HomeViewState extends State<HomeView> {
             ),
             const SizedBox(height: 8),
             Text(
-              pokemon.name.toUpperCase(),
+              (pokemon.translatedName.isNotEmpty ? pokemon.translatedName : pokemon.name).toUpperCase(),
               style: const TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),

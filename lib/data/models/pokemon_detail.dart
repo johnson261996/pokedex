@@ -26,6 +26,8 @@ class PokemonDetail extends HiveObject {
   final List<PokemonAbility> abilities;
   @HiveField(9)
   Uint8List? imageBytes;
+  @HiveField(10)
+  final String translatedName;
 
   PokemonDetail({
     required this.id,
@@ -38,10 +40,14 @@ class PokemonDetail extends HiveObject {
     required this.types,
     required this.abilities,
     this.imageBytes,
+    this.translatedName = '',
   });
 
   // Include the fromJson factory as well if you need it for network requests
-  factory PokemonDetail.fromJson(Map<String, dynamic> json) {
+  factory PokemonDetail.fromJson(
+    Map<String, dynamic> json, {
+    String translatedName = '',
+  }) {
     return PokemonDetail(
       id: json['id'],
       name: json['name'],
@@ -59,6 +65,7 @@ class PokemonDetail extends HiveObject {
       abilities: List<PokemonAbility>.from(
         json['abilities'].map((x) => PokemonAbility.fromJson(x)),
       ),
+      translatedName: translatedName,
     );
   }
 }

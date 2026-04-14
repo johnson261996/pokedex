@@ -62,6 +62,9 @@ class HomeController extends GetxController {
       showRecent.value = true;
       updateSuggestions(searchQuery.value);
     }, time: const Duration(milliseconds: 300));
+
+    // Load initial Pokemon list
+    fetchPokemonList();
   }
 
   void removeRecentSearch(String name) {
@@ -248,11 +251,18 @@ class HomeController extends GetxController {
       isLoading(true);
       pokemonList.clear();
       addRecentSearch(query);
-      final response = await _repository.getPokemonList(query: query);
-      if (response.results.isNotEmpty) {
-        final detail = await _repository.getPokemonDetail(
-          response.results.first.name,
-        );
+
+      // Prefix search (startsWith) - filter Pokemon whose names start with query
+      final matchedPokemon =
+          allPokemonList.where((item) {
+            final name = item.name.toString().toLowerCase();
+            return name.startsWith(query.toLowerCase()) &&
+                !name.contains("-mega");
+          }).toList();
+
+      // Fetch details for matched Pokemon
+      for (var item in matchedPokemon) {
+        final detail = await _repository.getPokemonDetail(item.name);
         pokemonList.add(detail);
         pokemonListBackup = List.from(pokemonList);
       }

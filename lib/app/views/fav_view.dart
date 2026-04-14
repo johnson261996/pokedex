@@ -13,7 +13,7 @@ class FavoritesView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Favorite Pokémon"),
+        title: Text("favorite_pokemon".tr),
         actions: [
           GestureDetector(
             onTap: () => favController.clearAll(),
@@ -24,7 +24,7 @@ class FavoritesView extends StatelessWidget {
 
       body: Obx(() {
         if (favController.favoriteList.isEmpty) {
-          return const Center(child: Text("No favorites yet"));
+          return Center(child: Text("no_favorites_yet".tr));
         }
 
         return GridView.builder(

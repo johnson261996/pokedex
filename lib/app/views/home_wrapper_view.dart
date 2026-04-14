@@ -28,19 +28,22 @@ class HomeWrapperView extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
           currentIndex: controller.tabIndex.value,
           onTap: controller.changeTabIndex,
-          items: const [
-            BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home)),
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.compare),
-              label: "Compare",
+              label: "home".tr,
+              icon: const Icon(Icons.home),
             ),
             BottomNavigationBarItem(
-              label: "Favorites",
-              icon: Icon(Icons.favorite),
+              icon: const Icon(Icons.compare),
+              label: "compare".tr,
             ),
             BottomNavigationBarItem(
-              label: "Settings",
-              icon: Icon(Icons.settings),
+              label: "favorites".tr,
+              icon: const Icon(Icons.favorite),
+            ),
+            BottomNavigationBarItem(
+              label: "settings".tr,
+              icon: const Icon(Icons.settings),
             ),
           ],
         ),

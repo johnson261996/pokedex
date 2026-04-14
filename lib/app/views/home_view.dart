@@ -59,9 +59,8 @@ class _HomeViewState extends State<HomeView> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Pokédex"),
+          title: Text("pokedex".tr),
           actions: <Widget>[
-      
             PopupMenuButton(
               position:
                   PopupMenuPosition.over, // Place the menu below the button
@@ -75,21 +74,21 @@ class _HomeViewState extends State<HomeView> {
               },
               itemBuilder:
                   (context) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: SortType.lowestNumber,
-                      child: Text("Lowest Number"),
+                      child: Text("sort_lowest_number".tr),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: SortType.highestNumber,
-                      child: Text("Highest Number"),
+                      child: Text("sort_highest_number".tr),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: SortType.aToZ,
-                      child: Text("A → Z"),
+                      child: Text("sort_a_to_z".tr),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: SortType.zToA,
-                      child: Text("Z → A"),
+                      child: Text("sort_z_to_a".tr),
                     ),
                   ],
               icon: const Icon(Icons.sort),
@@ -155,13 +154,13 @@ class _HomeViewState extends State<HomeView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Recent searches",
+                    "recent_searches".tr,
                     style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                   ),
                   TextButton(
                     onPressed: controller.clearAllRecentSearches,
                     child: Text(
-                      "Clear all",
+                      "clear_all".tr,
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 12,
@@ -211,9 +210,12 @@ class _HomeViewState extends State<HomeView> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  "Filter by Type",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Text(
+                  "filter_by_type".tr,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 16),
 
@@ -252,7 +254,7 @@ class _HomeViewState extends State<HomeView> {
 
                     Get.back();
                   },
-                  child: const Text("Clear Filters"),
+                  child: Text("clear_filters".tr),
                 ),
               ],
             ),
@@ -274,7 +276,7 @@ class _HomeViewState extends State<HomeView> {
               controller.showRecent.value = true;
             },
             decoration: InputDecoration(
-              hintText: "Search Pokémon by name...",
+              hintText: "search_pokemon_hint".tr,
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.search),
               suffixIcon:
@@ -309,7 +311,7 @@ class _HomeViewState extends State<HomeView> {
         // Random button
         ElevatedButton(
           onPressed: () => controller.getMultipleRandomPokemon(100),
-          child: const Text("🎲 Random Pokémon"),
+          child: Text("random_pokemon".tr),
         ),
         SizedBox(height: 10),
         Expanded(
@@ -322,7 +324,7 @@ class _HomeViewState extends State<HomeView> {
                     Icon(Icons.wifi_off, size: 70, color: Colors.grey),
                     const SizedBox(height: 10),
                     Text(
-                      "No internet connection",
+                      "no_internet_connection".tr,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -336,7 +338,7 @@ class _HomeViewState extends State<HomeView> {
                           controller.fetchAllPokemonNames();
                         }
                       },
-                      child: Text("Retry"),
+                      child: Text("retry".tr),
                     ),
                   ],
                 ),
@@ -347,7 +349,7 @@ class _HomeViewState extends State<HomeView> {
             }
 
             if (controller.pokemonList.isEmpty) {
-              return const Center(child: Text("No Pokémon found"));
+              return Center(child: Text("no_pokemon_found".tr));
             }
 
             if (controller.errorMessage.value.isNotEmpty) {

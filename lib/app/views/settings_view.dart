@@ -4,48 +4,76 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:pokemonapp/app/controller/settings_controller.dart';
 import 'package:pokemonapp/app/controller/theme_controller.dart';
+import 'package:pokemonapp/app/views/component/lang_tile.dart';
 
 class SettingsPage extends StatelessWidget {
-
   final controller = Get.put(SettingsController());
-    final themeCtrl = Get.find<ThemeController>();
+  final themeCtrl = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(title: const Text("Settings")),
+      appBar: AppBar(title: Text("settings".tr)),
 
       body: ListView(
         children: [
+          /// LANGUAGE
+          ListTile(
+            title: Text("language".tr),
+            leading: const Icon(Icons.language),
+
+            onTap: () {
+              Get.bottomSheet(
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Get.theme.cardColor,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
+
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LangTile(title: "English", lang: "en", country: "US"),
+                      LangTile(title: "Español", lang: "es", country: "ES"),
+                      LangTile(title: "日本語", lang: "ja", country: "JP"),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
 
           /// THEME
-          Obx(() => SwitchListTile(
-                title: const Text("Dark Mode"),
-                value: themeCtrl.isDark.value,
-                onChanged: (_) => themeCtrl.toggleTheme(),
-              )),
+          Obx(
+            () => SwitchListTile(
+              title: Text("dark_mode".tr),
+              value: themeCtrl.isDark.value,
+              onChanged: (_) => themeCtrl.toggleTheme(),
+            ),
+          ),
 
           /// ANIMATIONS
-          Obx(() => SwitchListTile(
-                title: const Text("Enable Animations"),
-                value: controller.animationsEnabled.value,
-                onChanged: (_) => controller.toggleAnimations(),
-              )),
+          Obx(
+            () => SwitchListTile(
+              title: Text("enable_animations".tr),
+              value: controller.animationsEnabled.value,
+              onChanged: (_) => controller.toggleAnimations(),
+            ),
+          ),
 
           const Divider(),
 
           /// CLEAR RECENT SEARCHES
           ListTile(
-            title: const Text("Clear Recent Searches"),
+            title: Text("clear_search".tr),
             trailing: const Icon(Icons.delete),
             onTap: () {
               controller.clearRecentSearches();
 
-              Get.snackbar(
-                "Cleared",
-                "Recent searches removed",
-              );
+              Get.snackbar("cleared".tr, "recent_searches_removed".tr);
             },
           ),
 
@@ -53,8 +81,8 @@ class SettingsPage extends StatelessWidget {
 
           /// ABOUT
           ListTile(
-            title: const Text("About App"),
-            subtitle: const Text("Pokémon TCG Viewer"),
+            title: Text("about_app".tr),
+            subtitle: Text("pokemon_tcg_viewer".tr),
             leading: const Icon(Icons.info),
             onTap: () {
               showAboutDialog(

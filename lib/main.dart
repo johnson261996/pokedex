@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pokemonapp/app/translation/app_translations.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
 import 'app/routes/app_pages.dart';
 
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark(),
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       getPages: AppPages.pages,
+      translations: AppTranslations(),
+      locale: const Locale('en', 'US'),
+      fallbackLocale: const Locale('en', 'US'),
       debugShowCheckedModeBanner: false,
     );
   }

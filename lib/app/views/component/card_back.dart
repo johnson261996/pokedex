@@ -23,11 +23,13 @@ class CardBack extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                card.name,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              Flexible(
+                child: Text(
+                  card.name,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
 
@@ -86,13 +88,15 @@ class CardBack extends StatelessWidget {
                   Text(
                     "${card.setName}",
                     style: TextStyle(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
+                      color: Theme.of(context).textTheme.bodySmall?.color,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
 
                   Text(
-                    int.tryParse(card.localId!) == null ? card.localId! : "${int.parse(card.localId!)}/${card.setOfficialCards} ${card.rarity}",
+                    int.tryParse(card.localId!) == null
+                        ? card.localId!
+                        : "${int.parse(card.localId!)}/${card.setOfficialCards} ${card.rarity}",
                   ),
                 ],
               ),
@@ -107,7 +111,11 @@ class CardBack extends StatelessWidget {
           /// ILLUSTRATOR
           Text(
             "Illustrator: ${card.illustrator}",
-            style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7)),
+            style: TextStyle(
+              color: Theme.of(
+                context,
+              ).textTheme.bodySmall?.color?.withOpacity(0.7),
+            ),
           ),
         ],
       ),

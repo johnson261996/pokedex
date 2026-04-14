@@ -5,13 +5,13 @@ import 'package:pokemonapp/app/controller/compare_controller.dart';
 class CompareView extends StatelessWidget {
   final controller = Get.find<CompareController>();
 
-   CompareView({super.key});
+  CompareView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Compare Pokémon"),
+        title: Text("compare_pokemon".tr),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),
@@ -21,9 +21,7 @@ class CompareView extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.selectedPokemons.length < 2) {
-          return const Center(
-            child: Text("Select at least 2 Pokémon to compare"),
-          );
+          return Center(child: Text("compare_select_two".tr));
         }
 
         final maxStat = 255; // Used to normalize the progress bars

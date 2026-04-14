@@ -16,19 +16,31 @@ class LangTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _langTile(title, lang, country);
-  }
-
-  Widget _langTile(String title, String lang, String country) {
     final controller = Get.find<SettingsController>();
 
-    return ListTile(
-      title: Text(title),
+    return Obx(() {
+      final isSelected =
+          controller.currentLocale.value.languageCode == lang &&
+          controller.currentLocale.value.countryCode == country;
 
-      onTap: () {
-        controller.changeLanguage(lang, country);
-        Get.back();
-      },
-    );
+      return ListTile(
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
+        selected: isSelected,
+        selectedTileColor: Get.theme.colorScheme.primary.withOpacity(0.12),
+        trailing:
+            isSelected
+                ? Icon(Icons.check, color: Get.theme.colorScheme.primary)
+                : null,
+        onTap: () {
+          controller.changeLanguage(lang, country);
+          Get.back();
+        },
+      );
+    });
   }
 }

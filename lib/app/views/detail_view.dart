@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/card_controller.dart';
 import 'package:pokemonapp/app/controller/detail_controller.dart';
+import 'package:pokemonapp/app/controller/settings_controller.dart';
 import 'package:pokemonapp/app/views/card_detail_view.dart';
 import 'package:pokemonapp/utils/type_colors.dart';
 
@@ -335,6 +336,7 @@ class DetailView extends StatelessWidget {
                           final card = cardController.cards[index];
                           return GestureDetector(
                             onTap: () async {
+                              final settings = Get.find<SettingsController>();
                               final success = await cardController
                                   .fetchCardDetail(card.id);
                               final detail = cardController.cardDetail.value;
@@ -348,7 +350,13 @@ class DetailView extends StatelessWidget {
                                 return;
                               }
 
-                              Get.to(() => CardDetailPage(card: detail));
+                              Get.to(
+                                () => CardDetailPage(card: detail),
+                                transition:
+                                    settings.animationsEnabled.value
+                                        ? Transition.fade
+                                        : Transition.noTransition,
+                              );
                             },
                             child: Container(
                               width: 150,

@@ -1,6 +1,8 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tilt/flutter_tilt.dart';
+import 'package:get/get.dart';
+import 'package:pokemonapp/app/controller/settings_controller.dart';
 import 'package:pokemonapp/app/views/component/card_back.dart';
 import 'package:pokemonapp/app/views/component/rarity_badge.dart';
 import 'package:pokemonapp/data/models/tcg_card.dart';
@@ -12,10 +14,14 @@ class PokemonCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = Get.find<SettingsController>();
     return Tilt(
       borderRadius: BorderRadius.circular(16),
-
+      tiltConfig: TiltConfig(
+        angle: settings.animationsEnabled.value ? 10.0 : 0.0,
+      ),
       child: FlipCard(
+        flipOnTouch: settings.animationsEnabled.value,
         alignment: Alignment.topCenter,
         front: Card(
           shape: RoundedRectangleBorder(

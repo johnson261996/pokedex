@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pokemonapp/app/views/component/ability.dart';
 import 'package:pokemonapp/app/views/component/attack.dart';
 import 'package:pokemonapp/app/views/component/rules.dart';
@@ -35,7 +36,7 @@ class CardBack extends StatelessWidget {
 
               Row(
                 children: [
-                  Text("HP ${card.hp ?? ''}"),
+                  Text("${'hp'.tr} ${card.hp ?? ''}"),
                   Text(
                     PokemonTypeColor.energyIcon(card.types?.first ?? ""),
                     style: const TextStyle(fontSize: 18),
@@ -46,11 +47,11 @@ class CardBack extends StatelessWidget {
           ),
 
           const SizedBox(height: 6),
-          if (card.stage != null) Text("${card.stage} Pokémon"),
+          if (card.stage != null) Text("${card.stage} ${'pokemon'.tr}"),
 
           if (card.evolveFrom != null)
             Text(
-              "Evolves from: ${card.evolveFrom}",
+              "${'evolves_from'.tr}: ${card.evolveFrom}",
               style: TextStyle(color: Theme.of(context).primaryColor),
             ),
 
@@ -110,7 +111,7 @@ class CardBack extends StatelessWidget {
 
           /// ILLUSTRATOR
           Text(
-            "Illustrator: ${card.illustrator}",
+            "${'illustrator'.tr}: ${card.illustrator}",
             style: TextStyle(
               color: Theme.of(
                 context,

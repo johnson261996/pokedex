@@ -22,7 +22,10 @@ class DetailView extends StatelessWidget {
           if (detail == null) {
             return Text("loading".tr);
           }
-          final displayName = detail.translatedName.isNotEmpty ? detail.translatedName : detail.name;
+          final displayName =
+              detail.translatedName.isNotEmpty
+                  ? detail.translatedName
+                  : detail.name;
           return Text(
             '#${detail.id} ${displayName.capitalizeFirst ?? displayName}',
           );
@@ -105,7 +108,10 @@ class DetailView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text('${'abilities'.tr}: ', style: TextStyle(fontSize: 16)),
+                      Text(
+                        '${'abilities'.tr}: ',
+                        style: TextStyle(fontSize: 16),
+                      ),
                       Wrap(
                         spacing: 12,
                         runSpacing: 0,
@@ -134,7 +140,10 @@ class DetailView extends StatelessWidget {
 
                       Row(
                         children: [
-                          Text('${'gender'.tr}:', style: TextStyle(fontSize: 16)),
+                          Text(
+                            '${'gender'.tr}:',
+                            style: TextStyle(fontSize: 16),
+                          ),
                           Icon(Icons.male, color: Colors.blue, size: 16),
                           SizedBox(width: 4),
                           Icon(Icons.female, color: Colors.pink, size: 16),
@@ -326,13 +335,20 @@ class DetailView extends StatelessWidget {
                           final card = cardController.cards[index];
                           return GestureDetector(
                             onTap: () async {
-                              await cardController.fetchCardDetail(card.id);
+                              final success = await cardController
+                                  .fetchCardDetail(card.id);
+                              final detail = cardController.cardDetail.value;
 
-                              Get.to(
-                                () => CardDetailPage(
-                                  card: cardController.cardDetail.value!,
-                                ),
-                              );
+                              if (!success || detail == null) {
+                                Get.snackbar(
+                                  'Error',
+                                  'Failed to load card details.',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                                return;
+                              }
+
+                              Get.to(() => CardDetailPage(card: detail));
                             },
                             child: Container(
                               width: 150,

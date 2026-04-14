@@ -46,7 +46,21 @@ class AppTranslations extends Translations {
       'loading': 'Loading...',
       'error_loading_ability': 'Error loading ability description',
       'no_description_available': 'No description available',
+      'pokemon_special_rule': 'Pokémon @type rule',
+      'tag_team_rule':
+          'When your TAG TEAM is Knocked Out, your opponent takes 3 Prize cards.',
+      'knocked_out_prize_cards':
+          'When your Pokémon-@type is Knocked Out, your opponent takes 2 Prize cards.',
+      'knocked_out_extra_prize_cards':
+          'When your Pokémon is Knocked Out, your opponent takes extra Prize cards.',
       'close': 'Close',
+      'hp': 'HP',
+      'pokemon': 'Pokémon',
+      'evolves_from': 'Evolves from',
+      'illustrator': 'Illustrator',
+      'weakness': 'Weakness',
+      'resistance': 'Resistance',
+      'retreat_cost': 'Retreat Cost',
     },
 
     /// 🇪🇸 Spanish
@@ -80,6 +94,13 @@ class AppTranslations extends Translations {
       'favorites': 'Favoritos',
       'cleared': 'Limpiado',
       'recent_searches_removed': 'Búsquedas recientes eliminadas',
+      'hp': 'PS',
+      'pokemon': 'Pokémon',
+      'evolves_from': 'Evoluciona de',
+      'illustrator': 'Ilustrador',
+      'weakness': 'Debilidad',
+      'resistance': 'Resistencia',
+      'retreat_cost': 'Costo de retirada',
       'pokemon_details': 'Detalles de Pokémon',
       'height': 'Altura',
       'weight': 'Peso',
@@ -97,6 +118,13 @@ class AppTranslations extends Translations {
       'loading': 'Cargando...',
       'error_loading_ability': 'Error al cargar la descripción de la habilidad',
       'no_description_available': 'Sin descripción disponible',
+      'pokemon_special_rule': 'Regla de Pokémon @type',
+      'tag_team_rule':
+          'Cuando tu TAG TEAM es noqueado, tu oponente toma 3 cartas de Premio.',
+      'knocked_out_prize_cards':
+          'Cuando tu Pokémon-@type es noqueado, tu oponente toma 2 cartas de Premio.',
+      'knocked_out_extra_prize_cards':
+          'Cuando tu Pokémon es noqueado, tu oponente toma cartas de Premio adicionales.',
       'close': 'Cerrar',
     },
 
@@ -131,6 +159,13 @@ class AppTranslations extends Translations {
       'favorites': 'お気に入り',
       'cleared': 'クリアしました',
       'recent_searches_removed': '最近の検索を削除しました',
+      'hp': 'HP',
+      'pokemon': 'ポケモン',
+      'evolves_from': '進化元',
+      'illustrator': 'イラストレーター',
+      'weakness': '弱点',
+      'resistance': '耐性',
+      'retreat_cost': '拠退コスト',
       'pokemon_details': 'ポケモンの詳細',
       'height': '身長',
       'weight': '重量',
@@ -148,6 +183,10 @@ class AppTranslations extends Translations {
       'loading': '読み込み中...',
       'error_loading_ability': '能力の説明を読み込めません',
       'no_description_available': '説明が見つかりません',
+      'pokemon_special_rule': 'ポケモン @type のルール',
+      'tag_team_rule': 'TAG TEAM が気絶したとき、相手は3枚のサイドを取ります。',
+      'knocked_out_prize_cards': 'あなたのポケモン-@type が気絶したとき、相手は2枚のサイドを取ります。',
+      'knocked_out_extra_prize_cards': 'あなたのポケモンが気絶したとき、相手は追加のサイドを取ります。',
       'close': '閉じる',
     },
   };

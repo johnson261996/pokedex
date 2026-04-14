@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RuleWidget extends StatelessWidget {
   final String name;
@@ -19,13 +20,16 @@ class RuleWidget extends StatelessWidget {
         children: [
           if (rulesToShow.isNotEmpty) ...[
             Text(
-              "Pokémon $special rule",
+              'pokemon_special_rule'.trParams({'type': special}),
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
 
             Text(
               rulesToShow,
-              style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodySmall?.color),
+              style: TextStyle(
+                fontSize: 13,
+                color: Theme.of(context).textTheme.bodySmall?.color,
+              ),
             ),
           ],
         ],
@@ -34,8 +38,8 @@ class RuleWidget extends StatelessWidget {
   }
 
   bool isTagTeam() {
-  return suffix?.toLowerCase().contains("tag team") ?? false;
-}
+    return suffix?.toLowerCase().contains("tag team") ?? false;
+  }
 
   bool isSpecialCard(String name) {
     final lower = name.toLowerCase();
@@ -62,22 +66,22 @@ class RuleWidget extends StatelessWidget {
 
   String getDefaultRule(String name) {
     final lower = name.toLowerCase();
-      final s = suffix?.toLowerCase() ?? "";
+    final s = suffix?.toLowerCase() ?? "";
 
     /// ✅ TAG TEAM (highest priority)
     if (s.contains("tag team")) {
-      return "When your TAG TEAM is Knocked Out, your opponent takes 3 Prize cards.";
+      return 'tag_team_rule'.tr;
     }
     const specialRules = {' ex': 'EX', ' gx': 'GX', ' v': 'V'};
 
     for (final MapEntry(key: suffix, value: type) in specialRules.entries) {
       if (lower.endsWith(suffix)) {
-        return "When your Pokémon-$type is Knocked Out, your opponent takes 2 Prize cards.";
+        return 'knocked_out_prize_cards'.trParams({'type': type});
       }
     }
 
     if (lower.endsWith(" vmax") || lower.endsWith(" vstar")) {
-      return "When your Pokémon is Knocked Out, your opponent takes extra Prize cards.";
+      return 'knocked_out_extra_prize_cards'.tr;
     }
 
     return "";

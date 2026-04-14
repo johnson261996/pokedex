@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:pokemonapp/data/models/tcg_card.dart';
 import 'package:pokemonapp/utils/type_colors.dart';
 
@@ -14,7 +15,7 @@ Widget weaknessRow(TcgCardDetail card) {
     children: [
       Column(
         children: [
-          const Text("Weakness"),
+          Text("weakness".tr),
           if (weakness != null && weakness["value"] != null)
             Row(
               children: [
@@ -27,7 +28,7 @@ Widget weaknessRow(TcgCardDetail card) {
 
       Column(
         children: [
-          const Text("Resistance"),
+          Text("resistance".tr),
           if (resistance != null && resistance["value"] != null)
             Row(
               children: [
@@ -40,7 +41,7 @@ Widget weaknessRow(TcgCardDetail card) {
 
       Column(
         children: [
-          const Text("Retreat Cost"),
+          Text("retreat_cost".tr),
           Row(
             children: List.generate(card.retreat ?? 0, (_) => const Text("⭐")),
           ),

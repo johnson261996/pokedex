@@ -14,90 +14,94 @@ class CardBack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// HEADER
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Text(
-                  card.name,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// HEADER
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                card.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-
-              Row(
-                children: [
-                  Text("${'hp'.tr} ${card.hp ?? ''}"),
-                  Text(
-                    PokemonTypeColor.energyIcon(card.types?.first ?? ""),
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 6),
-          if (card.stage != null) Text("${card.stage} ${'pokemon'.tr}"),
-
-          if (card.evolveFrom != null)
-            Text(
-              "${'evolves_from'.tr}: ${card.evolveFrom}",
-              style: TextStyle(color: Theme.of(context).primaryColor),
             ),
 
-          const SizedBox(height: 6),
-
-          /// ABILITIES
-          if (card.abilities.isNotEmpty) ...[
-            ...card.abilities.map((a) => AbilityWidget(ability: a)),
+            Row(
+              children: [
+                Text("${'hp'.tr} ${card.hp ?? ''}"),
+                Text(
+                  PokemonTypeColor.energyIcon(card.types?.first ?? ""),
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
           ],
+        ),
 
-          const Divider(),
+        const SizedBox(height: 6),
+        if (card.stage != null) Text("${card.stage} ${'pokemon'.tr}"),
 
-          /// ATTACKS
-          ...card.attacks.map((a) => AttackWidget(attack: a)),
+        if (card.evolveFrom != null)
+          Text(
+            "${'evolves_from'.tr}: ${card.evolveFrom}",
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
 
-          const Divider(),
-          if (isSpecialCard(card.name)) ...[
-            /// RULES
-            RuleWidget(name: card.name, suffix: card.suffix),
-          ],
-          const SizedBox(height: 6),
+        const SizedBox(height: 6),
 
-          /// WEAKNESS ROW
-          weaknessRow(card),
+        /// ABILITIES
+        if (card.abilities.isNotEmpty) ...[
+          ...card.abilities.map((a) => AbilityWidget(ability: a)),
+        ],
 
-          const SizedBox(height: 12),
+        const Divider(),
 
-          /// SET INFO
-          Row(
+        /// ATTACKS
+        ...card.attacks.map((a) => AttackWidget(attack: a)),
+
+        const Divider(),
+        if (isSpecialCard(card.name)) ...[
+          /// RULES
+          RuleWidget(name: card.name, suffix: card.suffix),
+        ],
+        const SizedBox(height: 6),
+
+        /// WEAKNESS ROW
+        weaknessRow(card),
+
+        const SizedBox(height: 12),
+
+        /// SET INFO
+        Flexible(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${card.setName}",
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodySmall?.color,
-                      fontWeight: FontWeight.bold,
+                  Flexible(
+                    child: Text(
+                      "${card.setName}",
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
 
-                  Text(
-                    int.tryParse(card.localId!) == null
-                        ? card.localId!
-                        : "${int.parse(card.localId!)}/${card.setOfficialCards} ${card.rarity}",
+                  Flexible(
+                    child: Text(
+                      int.tryParse(card.localId!) == null
+                          ? card.localId!
+                          : "${int.parse(card.localId!)}/${card.setOfficialCards} ${card.rarity}",
+                    ),
                   ),
                 ],
               ),
@@ -106,11 +110,13 @@ class CardBack extends StatelessWidget {
                 Image.network("${card.setSymbol}.png", height: 30),
             ],
           ),
+        ),
 
-          const SizedBox(height: 12),
+        const SizedBox(height: 12),
 
-          /// ILLUSTRATOR
-          Text(
+        /// ILLUSTRATOR
+        Flexible(
+          child: Text(
             "${'illustrator'.tr}: ${card.illustrator}",
             style: TextStyle(
               color: Theme.of(
@@ -118,8 +124,8 @@ class CardBack extends StatelessWidget {
               ).textTheme.bodySmall?.color?.withOpacity(0.7),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

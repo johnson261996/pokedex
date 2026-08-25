@@ -27,13 +27,15 @@ class PokemonDetailAdapter extends TypeAdapter<PokemonDetail> {
       types: (fields[7] as List).cast<PokemonType>(),
       abilities: (fields[8] as List).cast<PokemonAbility>(),
       imageBytes: fields[9] as Uint8List?,
+      translatedName: fields[10] == null ? '' : fields[10] as String,
+      color: fields[11] == null ? '' : fields[11] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, PokemonDetail obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +55,11 @@ class PokemonDetailAdapter extends TypeAdapter<PokemonDetail> {
       ..writeByte(8)
       ..write(obj.abilities)
       ..writeByte(9)
-      ..write(obj.imageBytes);
+      ..write(obj.imageBytes)
+      ..writeByte(10)
+      ..write(obj.translatedName)
+      ..writeByte(11)
+      ..write(obj.color);
   }
 
   @override

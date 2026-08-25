@@ -11,6 +11,7 @@ import 'package:pokemonapp/app/controller/network_controller.dart';
 import 'package:pokemonapp/app/controller/theme_controller.dart';
 import 'package:pokemonapp/app/routes/app_pages.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
+import 'package:pokemonapp/utils/card_colors.dart';
 import 'package:pokemonapp/utils/sort_type.dart';
 import 'package:pokemonapp/utils/type_colors.dart';
 
@@ -442,6 +443,10 @@ class _HomeViewState extends State<HomeView> {
   }
 
   GestureDetector pokemonCard(PokemonDetail pokemon) {
+    final speciesColor = PokemonCardColor.get(pokemon.color);
+    final contentColor =
+        speciesColor.computeLuminance() < 0.35 ? Colors.white : Colors.black87;
+
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routes.DETAIL, arguments: pokemon.name);
@@ -450,10 +455,23 @@ class _HomeViewState extends State<HomeView> {
       },
       child: Card(
         elevation: 4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
+        color: Colors.transparent,
+        clipBehavior: Clip.antiAlias,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                PokemonCardColor.lighten(speciesColor, 0.18),
+                PokemonCardColor.darken(speciesColor, 0.12),
+              ],
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
@@ -470,7 +488,7 @@ class _HomeViewState extends State<HomeView> {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.compare_arrows),
+                  icon: Icon(Icons.compare_arrows, color: contentColor),
                   onPressed: () {
                     final compareController = Get.put(CompareController());
 
@@ -480,7 +498,7 @@ class _HomeViewState extends State<HomeView> {
               ],
             ),
 
-            Expanded(
+              Expanded(
               child: FadeInImage.assetNetwork(
                 placeholder:
                     'assets/icons/ball.png', // Path to your local placeholder image
@@ -488,16 +506,22 @@ class _HomeViewState extends State<HomeView> {
                 fit: BoxFit.cover, // Adjust as needed
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              (pokemon.translatedName.isNotEmpty ? pokemon.translatedName : pokemon.name).toUpperCase(),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
+              const SizedBox(height: 8),
+              Text(
+                (pokemon.translatedName.isNotEmpty
+                        ? pokemon.translatedName
+                        : pokemon.name)
+                    .toUpperCase(),
+                style: TextStyle(
+                  color: contentColor,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
 
-            /// Types
-            Wrap(
+              /// Types
+              Wrap(
               spacing: 8,
               runSpacing: 8,
               children:
@@ -539,8 +563,9 @@ class _HomeViewState extends State<HomeView> {
                         );
                   }).toList(),
             ),
-            const SizedBox(height: 10),
-          ],
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );

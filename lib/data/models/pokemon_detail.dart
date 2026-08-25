@@ -26,8 +26,10 @@ class PokemonDetail extends HiveObject {
   final List<PokemonAbility> abilities;
   @HiveField(9)
   Uint8List? imageBytes;
-  @HiveField(10)
+  @HiveField(10, defaultValue: '')
   final String translatedName;
+  @HiveField(11, defaultValue: '')
+  final String color; // Add this line for the color field
 
   PokemonDetail({
     required this.id,
@@ -41,12 +43,14 @@ class PokemonDetail extends HiveObject {
     required this.abilities,
     this.imageBytes,
     this.translatedName = '',
+    this.color = '',
   });
 
   // Include the fromJson factory as well if you need it for network requests
   factory PokemonDetail.fromJson(
     Map<String, dynamic> json, {
     String translatedName = '',
+    String color = '',
   }) {
     return PokemonDetail(
       id: json['id'],
@@ -66,6 +70,7 @@ class PokemonDetail extends HiveObject {
         json['abilities'].map((x) => PokemonAbility.fromJson(x)),
       ),
       translatedName: translatedName,
+      color: color, // Assign the color field
     );
   }
 }

@@ -48,7 +48,11 @@ class PokemonRepository {
       }
     }
     
-    return PokemonDetail.fromJson(json, translatedName: translatedName);
+    return PokemonDetail.fromJson(
+      json,
+      translatedName: translatedName,
+      color: species?.color ?? '',
+    );
   }
 
   Future<PokemonSpecies?> getPokemonSpecies(String name) {

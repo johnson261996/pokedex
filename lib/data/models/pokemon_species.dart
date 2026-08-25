@@ -2,12 +2,14 @@ class PokemonSpecies {
   final EvolutionChain evolutionChain;
   final String description;
   final String category;
+  final String color;
   final Map<String, String> names; // language code -> name
 
   PokemonSpecies({
     required this.evolutionChain,
     required this.description,
     required this.category,
+    required this.color,
     required this.names,
   });
 
@@ -44,6 +46,7 @@ class PokemonSpecies {
       evolutionChain: EvolutionChain.fromJson(json["evolution_chain"]),
       description: desc,
       category: category,
+      color: json['color']?['name'] as String? ?? '',
       names: names,
     );
   }

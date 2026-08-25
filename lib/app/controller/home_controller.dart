@@ -16,7 +16,7 @@ class HomeController extends GetxController {
 
   var suggestions = <Map<String, dynamic>>[].obs; // 👈 suggestions list
   var allPokemonList = <PokemonListItem>[].obs; // 👈 all names for autocomplete
-  int limit = 150;
+  int limit = 10;
   int offset = 0;
   var searchQuery = ''.obs;
   var errorMessage = ''.obs;

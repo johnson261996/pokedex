@@ -52,6 +52,20 @@ class HomeController extends GetxController {
   var selectedTypeFilter = <String>[].obs;
   var recentSearches = <String>[].obs;
 
+  /// Keeps the first occurrence of each Pokémon. A Pokémon can be reached
+  /// through more than one request (for example, random results followed by a
+  /// type filter), so the UI should always receive a unique list.
+  List<PokemonDetail> _uniquePokemon(Iterable<PokemonDetail> pokemons) {
+    final seenIds = <int>{};
+    return pokemons.where((pokemon) => seenIds.add(pokemon.id)).toList();
+  }
+
+  void _setPokemonList(Iterable<PokemonDetail> pokemons) {
+    final uniquePokemon = _uniquePokemon(pokemons);
+    pokemonList.assignAll(uniquePokemon);
+    pokemonListBackup = List.from(uniquePokemon);
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -146,7 +160,7 @@ class HomeController extends GetxController {
           }).toList();
     }
 
-    pokemonList.assignAll(result);
+    pokemonList.assignAll(_uniquePokemon(result));
     hasMore = false;
     sortPokemon(); // Ensure sorting still active
   }
@@ -233,11 +247,17 @@ class HomeController extends GetxController {
       return;
     }
 
+    final loadedPokemon = <PokemonDetail>[];
+    final existingIds = pokemonList.map((pokemon) => pokemon.id).toSet();
+
     for (var item in response.results) {
       final detail = await _repository.getPokemonDetail(item.name);
-      pokemonList.add(detail);
-      pokemonListBackup = List.from(pokemonList);
+      if (existingIds.add(detail.id)) {
+        loadedPokemon.add(detail);
+      }
     }
+
+    _setPokemonList([...pokemonList, ...loadedPokemon]);
   }
 
   /// Search Pokémon (disables pagination)
@@ -260,12 +280,18 @@ class HomeController extends GetxController {
                 !name.contains("-mega");
           }).toList();
 
+      final loadedPokemon = <PokemonDetail>[];
+      final loadedIds = <int>{};
+
       // Fetch details for matched Pokemon
       for (var item in matchedPokemon) {
         final detail = await _repository.getPokemonDetail(item.name);
-        pokemonList.add(detail);
-        pokemonListBackup = List.from(pokemonList);
+        if (loadedIds.add(detail.id)) {
+          loadedPokemon.add(detail);
+        }
       }
+
+      _setPokemonList(loadedPokemon);
 
       hasMore = false; // disable load more during search
     } finally {
@@ -281,12 +307,18 @@ class HomeController extends GetxController {
 
       final random = Random();
 
-      for (int i = 0; i < count; i++) {
-        int id = random.nextInt(1025) + 1;
-        final detail = await _repository.getPokemonDetail(id.toString());
-        pokemonList.add(detail);
-        pokemonListBackup = List.from(pokemonList);
+      final randomIds = <int>{};
+      while (randomIds.length < count && randomIds.length < 1025) {
+        randomIds.add(random.nextInt(1025) + 1);
       }
+
+      final randomPokemon = <PokemonDetail>[];
+      for (final id in randomIds) {
+        final detail = await _repository.getPokemonDetail(id.toString());
+        randomPokemon.add(detail);
+      }
+
+      _setPokemonList(randomPokemon);
     } finally {
       isLoading(false);
     }

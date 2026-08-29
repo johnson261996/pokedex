@@ -10,6 +10,7 @@ import 'package:pokemonapp/app/controller/home_controller.dart';
 import 'package:pokemonapp/app/controller/network_controller.dart';
 import 'package:pokemonapp/app/controller/theme_controller.dart';
 import 'package:pokemonapp/app/routes/app_pages.dart';
+import 'package:pokemonapp/app/views/component/pokemon_mystery_sheet.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
 import 'package:pokemonapp/utils/card_colors.dart';
 import 'package:pokemonapp/utils/sort_type.dart';
@@ -129,7 +130,25 @@ class _HomeViewState extends State<HomeView> {
             }),
           ),
         ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _openPokemonMystery(),
+          icon: const Icon(Icons.catching_pokemon),
+          label: const Text("Who's that Pokémon?"),
+        ),
       ),
+    );
+  }
+
+  void _openPokemonMystery() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (controller.allPokemonList.isEmpty) {
+      controller.fetchAllPokemonNames();
+    }
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => PokemonMysterySheet(homeController: controller),
     );
   }
 

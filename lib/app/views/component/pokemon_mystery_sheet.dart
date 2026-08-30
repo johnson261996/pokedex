@@ -91,7 +91,7 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
     return SafeArea(
       top: false,
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 600),
+        constraints: const BoxConstraints(maxWidth: 600, minHeight: 600),
         margin: const EdgeInsets.fromLTRB(12, 48, 12, 12),
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         decoration: BoxDecoration(
@@ -233,10 +233,11 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
             label: const Text('Show hint'),
           ),
         const SizedBox(height: 14),
-        Text(
-          '$_attemptsLeft of 3 attempts remaining',
-          style: theme.textTheme.labelLarge,
-        ),
+        if(!isComplete)
+          Text(
+            '$_attemptsLeft of 3 attempts remaining',
+            style: theme.textTheme.labelLarge,
+          ),
         const SizedBox(height: 10),
         if (!isComplete) _buildGuessField() else _buildResultActions(),
         if (_message != null) ...[

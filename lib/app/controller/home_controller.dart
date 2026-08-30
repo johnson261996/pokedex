@@ -27,6 +27,7 @@ class HomeController extends GetxController {
   var sortType = SortType.lowestNumber.obs;
   List<PokemonDetail> pokemonListBackup = [];
   var isFiltering = false.obs;
+  bool _reloadAfterCurrentLoad = false;
   final List<String> allTypes = [
     "normal",
     "fire",
@@ -166,12 +167,13 @@ class HomeController extends GetxController {
   }
 
   // Load all Pokémon names for suggestions
-  void fetchAllPokemonNames() async {
+  Future<void> fetchAllPokemonNames() async {
     try {
       final response = await _repository.getPokemonList(limit: 1500, offset: 0);
       allPokemonList.value = response.results.map((e) => e).toList();
-    } catch (e) {
-      errorMessage.value = "something went wrong";
+    } catch (_) {
+      // This list is only used for search suggestions. Do not put the main
+      // Pokémon list into an error state when this optional request fails.
     }
   }
 
@@ -207,19 +209,35 @@ class HomeController extends GetxController {
 
   /// Load initial Pokémon
   Future<void> fetchPokemonList() async {
-    if (isLoading.value) return;
+    if (isLoading.value) {
+      _reloadAfterCurrentLoad = true;
+      return;
+    }
 
     try {
       isLoading(true);
+      errorMessage.value = '';
       offset = 0;
       hasMore = true;
       pokemonList.clear();
       sortPokemon();
       await _loadPokemon();
+    } catch (_) {
+      errorMessage.value = 'something went wrong';
     } finally {
       isLoading(false);
+
+      // A connectivity event may have arrived while the previous request was
+      // still failing. Run exactly one fresh request after it has finished.
+      if (_reloadAfterCurrentLoad) {
+        _reloadAfterCurrentLoad = false;
+        Future.microtask(fetchPokemonList);
+      }
     }
   }
+
+  /// Reloads safely after the network becomes available again.
+  Future<void> reloadAfterReconnect() => fetchPokemonList();
 
   /// Load more Pokémon on scroll end
   Future<void> loadMore() async {
@@ -230,6 +248,8 @@ class HomeController extends GetxController {
       offset += limit;
 
       await _loadPokemon();
+    } catch (_) {
+      // Keep already-loaded Pokémon visible if loading the next page fails.
     } finally {
       isLoadingMore(false);
     }

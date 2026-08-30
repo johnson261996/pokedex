@@ -50,7 +50,9 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
       if (mounted) setState(() => _pokemon = pokemon);
     } catch (_) {
       if (mounted) {
-        setState(() => _message = 'Could not load a mystery Pokemon. Try again.');
+        setState(
+          () => _message = 'Could not load a mystery Pokemon. Try again.',
+        );
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -72,9 +74,10 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
     } else {
       setState(() {
         _attemptsLeft--;
-        _message = _attemptsLeft == 0
-            ? 'So close - it was ${pokemon.name.capitalizeFirst}!'
-            : 'Not quite. $_attemptsLeft ${_attemptsLeft == 1 ? 'attempt' : 'attempts'} left.';
+        _message =
+            _attemptsLeft == 0
+                ? 'So close - it was ${pokemon.name.capitalizeFirst}!'
+                : 'Not quite. $_attemptsLeft ${_attemptsLeft == 1 ? 'attempt' : 'attempts'} left.';
       });
     }
     _fieldController?.clear();
@@ -95,9 +98,12 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(28),
         ),
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(child: _buildContent(theme, isComplete)),
+        child:
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                  child: _buildContent(theme, isComplete),
+                ),
       ),
     );
   }
@@ -119,7 +125,7 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
 
     final solvedColor = theme.colorScheme.primaryContainer;
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       children: [
         Container(
           width: 42,
@@ -130,12 +136,30 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
           ),
         ),
         const SizedBox(height: 18),
-        Text(
-          "WHO'S THAT POKEMON?",
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.1,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                "WHO'S THAT POKEMON?",
+                textAlign: TextAlign.center,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.1,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 40,
+              height: 40,
+              child: IconButton(
+                icon: const Icon(Icons.info_outline),
+                tooltip: 'How to play',
+                onPressed: _showInstructions,
+                padding: EdgeInsets.zero,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 6),
         Text(
@@ -173,10 +197,9 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
                   pokemon.imageUrl,
                   height: 178,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Icon(
-                    Icons.catching_pokemon,
-                    size: 120,
-                  ),
+                  errorBuilder:
+                      (_, __, ___) =>
+                          const Icon(Icons.catching_pokemon, size: 120),
                 ),
               ),
             ],
@@ -210,7 +233,10 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
             label: const Text('Show hint'),
           ),
         const SizedBox(height: 14),
-        Text('$_attemptsLeft of 3 attempts remaining', style: theme.textTheme.labelLarge),
+        Text(
+          '$_attemptsLeft of 3 attempts remaining',
+          style: theme.textTheme.labelLarge,
+        ),
         const SizedBox(height: 10),
         if (!isComplete) _buildGuessField() else _buildResultActions(),
         if (_message != null) ...[
@@ -219,7 +245,8 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
             _message!,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: _isSolved ? Colors.green.shade700 : theme.colorScheme.error,
+              color:
+                  _isSolved ? Colors.green.shade700 : theme.colorScheme.error,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -294,6 +321,104 @@ class _PokemonMysterySheetState extends State<PokemonMysterySheet> {
       onPressed: _startRound,
       icon: const Icon(Icons.refresh),
       label: const Text('New mystery Pokemon'),
+    );
+  }
+
+  void _showInstructions() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final theme = Theme.of(context);
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.info, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              const Text('How to Play'),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildInstructionItem(
+                  icon: Icons.visibility,
+                  title: 'Identify the Pokemon',
+                  description:
+                      'Look at the silhouette or pixels of the mystery Pokemon.',
+                  theme: theme,
+                ),
+                const SizedBox(height: 16),
+                _buildInstructionItem(
+                  icon: Icons.lightbulb,
+                  title: 'Use Hints',
+                  description:
+                      'Click "Show hint" to reveal the Pokemon\'s type.',
+                  theme: theme,
+                ),
+                const SizedBox(height: 16),
+                _buildInstructionItem(
+                  icon: Icons.edit,
+                  title: 'Make Your Guess',
+                  description:
+                      'Type the Pokemon\'s name in the text field and submit your answer.',
+                  theme: theme,
+                ),
+                const SizedBox(height: 16),
+                _buildInstructionItem(
+                  icon: Icons.check_circle,
+                  title: 'Win the Round',
+                  description:
+                      'Guess correctly within 3 attempts to win and unlock the next mystery Pokemon!',
+                  theme: theme,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Got it!'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildInstructionItem({
+    required IconData icon,
+    required String title,
+    required String description,
+    required ThemeData theme,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: theme.colorScheme.primary, size: 24),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

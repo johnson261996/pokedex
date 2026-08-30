@@ -49,7 +49,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> _pullRefresh() async {
-    controller.fetchPokemonList();
+    await controller.fetchPokemonList();
   }
 
   @override
@@ -368,12 +368,12 @@ class _HomeViewState extends State<HomeView> {
               return const Center(child: CircularProgressIndicator());
             }
 
-            if (controller.pokemonList.isEmpty) {
-              return Center(child: Text("no_pokemon_found".tr));
-            }
-
             if (controller.errorMessage.value.isNotEmpty) {
               return Center(child: Text(controller.errorMessage.value));
+            }
+
+            if (controller.pokemonList.isEmpty) {
+              return Center(child: Text("no_pokemon_found".tr));
             }
 
             if (controller.isFiltering.value) {

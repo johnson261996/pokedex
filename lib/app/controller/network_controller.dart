@@ -21,15 +21,15 @@ class NetworkController extends GetxController {
 
     /// Listener
     _connectivity.onConnectivityChanged.listen((status) {
+      final wasConnected = isConnected.value;
       updateConnectionStatus(status);
-      if (isConnected.value) {
-        homeController.fetchPokemonList();
-         homeController.fetchAllPokemonNames();
-      } else {
+      if (!wasConnected && isConnected.value) {
+        homeController.reloadAfterReconnect();
+        homeController.fetchAllPokemonNames();
+      } else if (!isConnected.value) {
         homeController.pokemonList.clear();
-         homeController.allPokemonList.clear();
+        homeController.allPokemonList.clear();
       }
-
     });
   }
 

@@ -1,6 +1,6 @@
-import 'dart:io';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokemonapp/app/controller/card_controller.dart';
@@ -15,6 +15,11 @@ import 'package:pokemonapp/data/models/pokemon_detail.dart';
 import 'package:pokemonapp/utils/card_colors.dart';
 import 'package:pokemonapp/utils/sort_type.dart';
 import 'package:pokemonapp/utils/type_colors.dart';
+
+class HomeViewPlatform {
+  static bool get useWindowsLayout =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.windows;
+}
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -386,7 +391,8 @@ class _HomeViewState extends State<HomeView> {
               padding: const EdgeInsets.all(8),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: Platform.isWindows ? 1.1 : 0.75,
+                childAspectRatio:
+                    HomeViewPlatform.useWindowsLayout ? 1.1 : 0.75,
               ),
               itemCount:
                   controller.pokemonList.length +
@@ -491,40 +497,52 @@ class _HomeViewState extends State<HomeView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Obx(
-                    () => Icon(
-                      favController.isFavorite(pokemon)
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      color: Colors.red,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: Obx(
+                      () => Icon(
+                        favController.isFavorite(pokemon)
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
+                    ),
+                    onPressed: () {
+                      favController.toggleFavorite(pokemon);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.compare_arrows, color: contentColor),
+                    onPressed: () {
+                      final compareController = Get.put(CompareController());
+
+                      compareController.addPokemon(pokemon);
+                    },
+                  ),
+                  Obx(
+                    () => IconButton(
+                      color: Colors.white,
+                      icon: Icon(
+                        controller.playingPokemonId.value == pokemon.id &&
+                                controller.isPlaying.value
+                            ? Icons.volume_up
+                            : Icons.volume_mute,
+                      ),
+                      onPressed: () => controller.playCry(pokemon),
                     ),
                   ),
-                  onPressed: () {
-                    favController.toggleFavorite(pokemon);
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.compare_arrows, color: contentColor),
-                  onPressed: () {
-                    final compareController = Get.put(CompareController());
-
-                    compareController.addPokemon(pokemon);
-                  },
-                ),
-              ],
-            ),
+                ],
+              ),
 
               Expanded(
-              child: FadeInImage.assetNetwork(
-                placeholder:
-                    'assets/icons/ball.png', // Path to your local placeholder image
-                image: pokemon.imageUrl, // URL of the network image
-                fit: BoxFit.cover, // Adjust as needed
+                child: FadeInImage.assetNetwork(
+                  placeholder:
+                      'assets/icons/ball.png', // Path to your local placeholder image
+                  image: pokemon.imageUrl, // URL of the network image
+                  fit: BoxFit.cover, // Adjust as needed
+                ),
               ),
-            ),
               const SizedBox(height: 8),
               Text(
                 (pokemon.translatedName.isNotEmpty
@@ -541,47 +559,47 @@ class _HomeViewState extends State<HomeView> {
 
               /// Types
               Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children:
-                  pokemon.types.map((t) {
-                    final typeName = t.name;
-                    final color = PokemonTypeColor.get(typeName);
+                spacing: 8,
+                runSpacing: 8,
+                children:
+                    pokemon.types.map((t) {
+                      final typeName = t.name;
+                      final color = PokemonTypeColor.get(typeName);
 
-                    return Platform.isWindows
-                        ? Chip(
-                          label: Text(
-                            typeName.capitalize!,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                      return HomeViewPlatform.useWindowsLayout
+                          ? Chip(
+                            label: Text(
+                              typeName.capitalize!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          backgroundColor: color,
-                        )
-                        : Chip(
-                          labelPadding: const EdgeInsets.symmetric(
-                            horizontal: 4,
-                            vertical: -2,
-                          ),
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          padding: EdgeInsets.zero,
-                          visualDensity: const VisualDensity(
-                            horizontal: -4,
-                            vertical: -4,
-                          ),
-                          label: Text(
-                            typeName.capitalize!,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                            backgroundColor: color,
+                          )
+                          : Chip(
+                            labelPadding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: -2,
                             ),
-                          ),
-                          backgroundColor: color,
-                        );
-                  }).toList(),
-            ),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            padding: EdgeInsets.zero,
+                            visualDensity: const VisualDensity(
+                              horizontal: -4,
+                              vertical: -4,
+                            ),
+                            label: Text(
+                              typeName.capitalize!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            backgroundColor: color,
+                          );
+                    }).toList(),
+              ),
               const SizedBox(height: 10),
             ],
           ),

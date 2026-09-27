@@ -1,11 +1,12 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'dart:io';
 
 class DownloadService {
   static final Dio _dio = Dio();
@@ -20,6 +21,14 @@ class DownloadService {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Downloading card...')));
+
+      if (kIsWeb) {
+        _showError(
+          context,
+          'Downloading cards is not supported in the browser.',
+        );
+        return false;
+      }
 
       // Request storage permission
       final status = await Permission.storage.request();
@@ -57,7 +66,7 @@ class DownloadService {
     BuildContext context,
   ) async {
     try {
-      final result = await ImageGallerySaver.saveImage(
+      final result = await ImageGallerySaverPlus.saveImage(
         Uint8List.fromList(imageBytes),
         quality: 100,
         name: 'pokemon_${cardName}_${DateTime.now().millisecondsSinceEpoch}',

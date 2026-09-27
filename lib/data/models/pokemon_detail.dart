@@ -30,6 +30,10 @@ class PokemonDetail extends HiveObject {
   final String translatedName;
   @HiveField(11, defaultValue: '')
   final String color; // Add this line for the color field
+  @HiveField(12)
+    final String? cryLatest;
+  @HiveField(13)
+  final String? cryLegacy;
 
   PokemonDetail({
     required this.id,
@@ -44,6 +48,8 @@ class PokemonDetail extends HiveObject {
     this.imageBytes,
     this.translatedName = '',
     this.color = '',
+    this.cryLatest,
+    this.cryLegacy,
   });
 
   // Include the fromJson factory as well if you need it for network requests
@@ -71,6 +77,8 @@ class PokemonDetail extends HiveObject {
       ),
       translatedName: translatedName,
       color: color, // Assign the color field
+      cryLatest: json['cries']?['latest'],
+      cryLegacy: json['cries']?['legacy'],
     );
   }
 }

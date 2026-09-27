@@ -354,7 +354,7 @@ class DetailView extends StatelessWidget {
                                 () => CardDetailPage(card: detail),
                                 transition:
                                     settings.animationsEnabled.value
-                                        ? Transition.fade
+                                        ? Transition.cupertino
                                         : Transition.noTransition,
                               );
                             },

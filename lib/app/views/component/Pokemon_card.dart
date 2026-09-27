@@ -25,7 +25,7 @@ class PokemonCardWidget extends StatelessWidget {
         flipOnTouch: settings.animationsEnabled.value,
         alignment: Alignment.topCenter,
         front: cardFront(),
-        back: CardBack(card: card),
+        back:  Image.asset('assets/card/pokemon_card_backside.png', fit: BoxFit.cover),
       ),
     );
   }

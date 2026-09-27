@@ -12,6 +12,8 @@ class CardBack extends StatelessWidget {
 
   const CardBack({super.key, required this.card});
 
+  String get setSymbolUrl => card.setSymbol?.trim() ?? '';
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -106,8 +108,7 @@ class CardBack extends StatelessWidget {
                 ],
               ),
 
-              if (card.setSymbol != null && card.setSymbol!.isNotEmpty)
-                Image.network("${card.setSymbol}.png", height: 30),
+              if (setSymbolUrl.isNotEmpty) Image.network(setSymbolUrl, height: 30),
             ],
           ),
         ),

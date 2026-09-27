@@ -1,13 +1,17 @@
 import 'dart:math';
 
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
 import 'package:pokemonapp/data/models/pokemon_list_response.dart';
 import 'package:pokemonapp/data/repository/pokemon_repository.dart';
 import 'package:pokemonapp/utils/sort_type.dart';
 
 class HomeController extends GetxController {
-  final PokemonRepository _repository = PokemonRepository();
+  final PokemonRepository _repository;
+
+  HomeController({PokemonRepository? repository})
+    : _repository = repository ?? PokemonRepository();
 
   var pokemonList = <PokemonDetail>[].obs;
 
@@ -52,6 +56,57 @@ class HomeController extends GetxController {
   /// Selected Pokémon types for filtering
   var selectedTypeFilter = <String>[].obs;
   var recentSearches = <String>[].obs;
+   final AudioPlayer _player = AudioPlayer();
+
+  final RxInt playingPokemonId = (-1).obs;
+  final RxBool isPlaying = false.obs;
+
+ 
+  Future<void> playCry(PokemonDetail pokemon) async {
+    final url = pokemon.cryLatest ?? pokemon.cryLegacy;
+
+    if (url == null || url.isEmpty) {
+      Get.snackbar(
+        "Cry unavailable",
+        "No cry available for ${pokemon.name.capitalizeFirst}",
+      );
+      return;
+    }
+
+    try {
+      if (playingPokemonId.value == pokemon.id && isPlaying.value) {
+        await _player.stop();
+        playingPokemonId.value = -1;
+        isPlaying.value = false;
+        return;
+      }
+
+      await _player.stop();
+
+      playingPokemonId.value = pokemon.id;
+      isPlaying.value = true;
+
+      await _player.setUrl(url);
+      await _player.play();
+    } catch (e) {
+      playingPokemonId.value = -1;
+      isPlaying.value = false;
+
+      Get.snackbar("Cry playback error", "Error playing cry for ${pokemon.name.capitalizeFirst}: $e");
+    }
+  }
+
+  Future<void> stopCry() async {
+    await _player.stop();
+    playingPokemonId.value = -1;
+    isPlaying.value = false;
+  }
+
+  @override
+  void onClose() {
+    _player.dispose();
+    super.onClose();
+  }
 
   /// Keeps the first occurrence of each Pokémon. A Pokémon can be reached
   /// through more than one request (for example, random results followed by a
@@ -70,13 +125,20 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
+  _player.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        playingPokemonId.value = -1;
+        isPlaying.value = false;
+      }
+    });
     // Debounce search input (delay 300 ms)
     debounce(searchQuery, (_) {
       showSuggestions.value = true;
       showRecent.value = true;
       updateSuggestions(searchQuery.value);
     }, time: const Duration(milliseconds: 300));
+
+    fetchAllPokemonNames();
 
     // Load initial Pokemon list
     fetchPokemonList();
@@ -184,27 +246,31 @@ class HomeController extends GetxController {
 
   // Update suggestions list as user types
   void updateSuggestions(String query) {
-    if (query.isEmpty) {
+    final trimmedQuery = query.trim();
+
+    if (trimmedQuery.isEmpty) {
       suggestions.clear();
       showSuggestions.value = false;
       return;
     }
-    suggestions.value =
-        allPokemonList
-            //.where((p) => p.name.contains(query.toLowerCase()))
-            .where((item) {
-              final name = item.name.toString().toLowerCase();
-              return name.startsWith(query.toLowerCase()) &&
-                  !name.contains("-mega");
-            })
-            .take(15) // limit to 10 suggestions
-            .map(
-              (item) => {
-                "name": item.name,
-                "url": item.url, // contains Pokémon ID
-              },
-            )
-            .toList();
+
+    final matches = allPokemonList
+        .where((item) {
+          final name = item.name.toString().toLowerCase();
+          return name.startsWith(trimmedQuery.toLowerCase()) &&
+              !name.contains("-mega");
+        })
+        .take(15)
+        .map(
+          (item) => {
+            "name": item.name,
+            "url": item.url,
+          },
+        )
+        .toList();
+
+    suggestions.assignAll(matches);
+    showSuggestions.value = suggestions.isNotEmpty;
   }
 
   /// Load initial Pokémon

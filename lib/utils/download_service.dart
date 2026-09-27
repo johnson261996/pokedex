@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,11 +32,23 @@ class DownloadService {
       }
 
       // Request storage permission
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        _showError(context, 'Storage permission denied');
-        return false;
-      }
+      if(Platform.isAndroid) {
+        final androidInfo = await DeviceInfoPlugin().androidInfo;
+        if (androidInfo.version.sdkInt < 29) {
+          final status = await Permission.storage.request();
+          if (!status.isGranted) {
+            _showError(context, 'Storage permission denied');
+            return false;
+          }
+        }
+      }else{
+        final status = await Permission.storage.request();
+        if (!status.isGranted) {
+          _showError(context, 'Storage permission denied');
+          return false;
+        }
+      } 
+    
 
       // Download image bytes
       final response = await _dio.get<List<int>>(

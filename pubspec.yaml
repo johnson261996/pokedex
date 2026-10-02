@@ -47,8 +47,6 @@ dependencies:
   http: ^1.1.0
   just_audio: ^0.10.5
   device_info_plus: ^11.3.0
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

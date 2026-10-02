@@ -41,7 +41,7 @@ class DownloadService {
             return false;
           }
         }
-      }else{
+      } else if (Platform.isIOS) {
         final status = await Permission.storage.request();
         if (!status.isGranted) {
           _showError(context, 'Storage permission denied');

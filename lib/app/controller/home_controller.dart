@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:pokemonapp/data/models/pokemon_detail.dart';
@@ -73,6 +74,11 @@ class HomeController extends GetxController {
       return;
     }
 
+      final playbackUrl =
+        !kIsWeb && defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.iOS
+          ? 'https://pokemoncries.com/cries/${pokemon.id}.mp3'
+          : url;
+
     try {
       if (playingPokemonId.value == pokemon.id && isPlaying.value) {
         await _player.stop();
@@ -86,7 +92,7 @@ class HomeController extends GetxController {
       playingPokemonId.value = pokemon.id;
       isPlaying.value = true;
 
-      await _player.setUrl(url);
+      await _player.setUrl(playbackUrl);
       await _player.play();
     } catch (e) {
       playingPokemonId.value = -1;

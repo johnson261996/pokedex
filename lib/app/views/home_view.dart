@@ -201,16 +201,19 @@ class _HomeViewState extends State<HomeView> {
               itemCount: controller.recentSearches.length,
               itemBuilder: (_, index) {
                 final name = controller.recentSearches[index];
-                return ListTile(
-                  leading: Icon(Icons.history),
-                  title: Text(name.capitalizeFirst!),
-                  trailing: IconButton(
-                    onPressed: () {
-                      controller.removeRecentSearch(name);
-                    },
-                    icon: Icon(Icons.close),
+                return Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    leading: Icon(Icons.history),
+                    title: Text(name.capitalizeFirst!),
+                    trailing: IconButton(
+                      onPressed: () {
+                        controller.removeRecentSearch(name);
+                      },
+                      icon: Icon(Icons.close),
+                    ),
+                    onTap: () => controller.onRecentSearchSelected(name),
                   ),
-                  onTap: () => controller.onRecentSearchSelected(name),
                 );
               },
             ),
